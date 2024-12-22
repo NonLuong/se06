@@ -12,7 +12,7 @@ type Passenger struct {
     Email       string    `json:"email"`
     Password    string    `json:"password"`
 
-    GenderID    *uint       `json:"gender_id"`
+    GenderID    uint       `json:"gender_id"`
     Gender      Gender    `gorm:"foreignKey:GenderID" json:"gender"` // ความสัมพันธ์ belongsTo
 
     Bookings    []Booking `gorm:"foreignKey:PassengerID" json:"bookings"` // ความสัมพันธ์ hasMany

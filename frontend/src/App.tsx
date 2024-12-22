@@ -30,11 +30,21 @@ import Trainbook from "./pages/room/trainbook";
 import Trainer from "./pages/trainer";
 import CreateTrainer from "./pages/trainer/create";
 import EditTrainer from './pages/trainer/edit';
+import Login from "./pages/login/login";
+import Driver from "./pages/Driver/Driver";
+import Employee from "./pages/Employee/Employee";
+import EditEmployee from "./pages/Employee/EditEmployee";
+import AddEmployee from "./pages/Employee/AddEmployee";
+import Vehicle from "./pages/Vehicle/Vehicle";
+
 
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
+
+      <Route path="/login" element={<Login />} />
+
 
       {/* ของเปิ้ล Booking and Chat */}
         <Route path="/" element={<Home />} /> {/* เส้นทางสำหรับหน้า Home */}
@@ -73,10 +83,13 @@ const App: React.FC = () => {
         <Route path="/trainer/create" element={<CreateTrainer />} />
         <Route path="/trainer/edit/:id" element={<EditTrainer />} />
 
+        {/*น้ำฝน Admin*/}
+        <Route path="/Drivers" element={<Driver />} />
+        <Route path="/Employees" element={<Driver />} />
+        <Route path="/Employee/create" element={<AddEmployee />} />
+        <Route path="/Employee/edit/:id" element={<EditEmployee />} />
+        <Route path="/Vehicles" element={<Vehicle />} />
 
-
-
-        
       </Routes>
     </Router>
   );

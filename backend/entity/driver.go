@@ -9,22 +9,29 @@ import (
 type Driver struct {
 	gorm.Model
 	
-	Name             string    `json:"name"`
-	DriverLicenseNum string    `json:"driver_license_number"`
-	PhoneNumber      string    `json:"phone_number"`
-	Password         string    `json:"password"`
-	Profile          string    `json:"profile"`
-	Income           float64   `json:"income"`
-	BirthDate        time.Time `json:"birth_date"` // วันเกิด
+	Firstname       				string
+    Lastname       					string
+    PhoneNumber     				string
+    DateOfBirth        				time.Time
+	IdentificationNumber			string
+	DriverLicensenumber				string
+	DriverLicenseExpirationDate 	time.Time
+    Income          				float64
+	Profile                         string 
+    Email           				string
+    Password        				string
 
-	GenderID         *uint       `json:"gender_id"`
+	GenderID         uint       `json:"gender_id"`
 	Gender           Gender    `gorm:"foreignKey:GenderID" json:"gender"` 
 
 	LocationID       *uint       `json:"location_id"`
 	Location         Location  `gorm:"foreignKey:LocationID" json:"location"` 
 	
-	VehicleID        *uint       `json:"vehicle_id"`
+	VehicleID        uint       `json:"vehicle_id"`
 	Vehicle          Vehicle   `gorm:"foreignKey:VehicleID" json:"vehicle"` 
+
+	EmployeeID       uint
+    Employee         Employee 	`gorm:"foreignKey:EmployeeID"`
 
 	StatusID         *uint       `json:"status_id"`
 	Status           Status    `gorm:"foreignKey:StatusID" json:"status"` 

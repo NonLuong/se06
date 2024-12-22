@@ -1,17 +1,26 @@
 package entity
 
 import "gorm.io/gorm"
+import "time"
 
 type Vehicle struct {
-	gorm.Model   
+	gorm.Model
+	LicensePlate       				string
+    Brand        					string
+    VehicleModel     				string
+	Color     						string
+    DateOfPurchase        			time.Time
+    ExpirationDateOfVehicleAct      time.Time
+    Capacity        				int
     
-    LicensePlate  string    `json:"license_plate"`
-    VehicleModel  string    `json:"model"`
-    Capacity      int       `json:"capacity"`
-    VehicleTypeID int       `json:"vehicle_type_id"`
-    VehicleType   VehicleType `gorm:"foreignKey:VehicleTypeID" json:"vehicle_type"` // ความสัมพันธ์ belongsTo
-    StatusID      int       `json:"status_id"`
-    Status        Status    `gorm:"foreignKey:StatusID" json:"status"` // ความสัมพันธ์ belongsTo
+    VehicleTypeID       uint
+    VehicleType         VehicleType `gorm:"foreignKey:VehicleTypeID"`
+
+    EmployeeID         uint
+    Employee           Employee   `gorm:"foreignKey:EmployeeID"`
+
+	StatusID         uint
+    Status           Status   `gorm:"foreignKey:StatusID"`
 	
     Drivers       []Driver  `gorm:"foreignKey:VehicleID" json:"drivers"` // ความสัมพันธ์ hasMany
 }

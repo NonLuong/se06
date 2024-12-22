@@ -156,14 +156,52 @@ func registerRoutes(r *gin.Engine) {
 	r.DELETE("/rooms/:id", controller.DeleteRoom) // ลบห้อง
 
 	// Routes สำหรับ Trainer
-	r.GET("/trainers", controller.GetAllTrainer)       // ดึงข้อมูล Trainer ทั้งหมด
-	r.GET("/trainers/:id", controller.GetByIDTrainer)  // ดึงข้อมูล Trainer ตาม ID
-	r.POST("/trainers", controller.CreateTrainer)      // สร้าง Trainer ใหม่
-	r.PATCH("/trainers/:id", controller.UpdateTrainer) // อัปเดตข้อมูล Trainer
+	r.GET("/trainers", controller.GetAllTrainer)        // ดึงข้อมูล Trainer ทั้งหมด
+	r.GET("/trainers/:id", controller.GetByIDTrainer)   // ดึงข้อมูล Trainer ตาม ID
+	r.POST("/trainers", controller.CreateTrainer)       // สร้าง Trainer ใหม่
+	r.PATCH("/trainers/:id", controller.UpdateTrainer)  // อัปเดตข้อมูล Trainer
 	r.DELETE("/trainers/:id", controller.DeleteTrainer) // ลบ Trainer
 
-	r.GET("/gender", controller.GetAllGender)       // ดึงข้อมูล Gender ทั้งหมด
-	r.GET("/gender/:id", controller.GetGenderByID)       // ดึงข้อมูล Gender ตาม ID
+	r.GET("/gender", controller.GetAllGender)      // ดึงข้อมูล Gender ทั้งหมด
+	r.GET("/gender/:id", controller.GetGenderByID) // ดึงข้อมูล Gender ตาม ID
+
+	r.POST("/auth/signin", controller.UniversalSignin)
+
+	// Position Routes
+	r.GET("/positions", controller.ListPositions)
+	r.GET("/position/:id", controller.GetPosition)
+
+	// Employee Routes
+	r.GET("/employees", controller.ListEmployees)
+	r.GET("/employees/:id", controller.GetEmployee)
+	r.POST("/employees", controller.CreateEmployee)
+	r.DELETE("/employee/:id", controller.DeleteEmployee)
+	r.PATCH("/employee/:id", controller.UpdateEmployee)
+
+	// Driver Routes
+	r.GET("/drivers", controller.GetDrivers)         // ดึงข้อมูล Driver ทั้งหมด
+	r.GET("/driver/:id", controller.GetDriverDetail) // ดึงข้อมูล Driver ตาม ID
+	r.POST("/drivers", controller.CreateDriver)      // สร้าง Driver ใหม่
+	r.PATCH("/driver/:id", controller.UpdateDriver)  // อัปเดตข้อมูล Driver ตาม ID
+	r.DELETE("/driver/:id", controller.DeleteDriver) // ลบข้อมูล Driver ตาม ID
+
+	// Passenger Routes
+	r.POST("/passengers", controller.CreatePassenger)
+	r.GET("/passengers", controller.GetPassengers)
+	r.GET("/passengers/:id", controller.GetPassengerDetail)
+	r.PUT("/passengers/:id", controller.UpdatePassenger)
+	r.DELETE("/passengers/:id", controller.DeletePassenger)
+
+	// Vehicle Routes
+	r.POST("/vehicles", controller.CreateVehicle)
+	r.GET("/vehicles", controller.GetVehicles)
+	r.GET("/vehicles/:id", controller.GetVehicleDetail)
+	r.PUT("/vehicles/:id", controller.UpdateVehicle)
+	r.DELETE("/vehicles/:id", controller.DeleteVehicle)
+
+	// VehicleType Routes
+	r.GET("/vehicletype/:id", controller.GetVehicleType)
+	r.GET("/vehicletypes", controller.ListVehicleTypes)
 
 	// Protected Routes (ต้องตรวจสอบ JWT)
 	protected := r.Group("/api", middlewares.Authorizes())
