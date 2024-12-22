@@ -2,37 +2,53 @@ import { RoomInterface } from "../../interfaces/IRoom";
 
 const apiUrl = "http://localhost:8080";
 
-// GET all rooms
+// ดึงข้อมูลห้องทั้งหมด
 export async function GetRooms() {
   const requestOptions = {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
   };
 
-  const res = await fetch(`${apiUrl}/rooms`, requestOptions)
-    .then((res) => (res.status === 200 ? res.json() : false));
-
-  return res;
+  try {
+    const res = await fetch(`${apiUrl}/rooms`, requestOptions); // แก้เป็น /rooms
+    if (res.ok) {
+      return await res.json(); // แปลงผลลัพธ์เป็น JSON หากสำเร็จ
+    } else {
+      console.error("เกิดข้อผิดพลาดในการดึงข้อมูลห้อง");
+      return false;
+    }
+  } catch (error) {
+    console.error("ข้อผิดพลาด:", error);
+    return false;
+  }
 }
 
-// GET room by ID
+// ดึงข้อมูลห้องตาม ID
 export async function GetRoomById(id: number | undefined) {
+  if (!id) {
+    throw new Error("กรุณาระบุ ID ของห้อง");
+  }
+
   const requestOptions = {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
   };
 
-  const res = await fetch(`${apiUrl}/rooms/${id}`, requestOptions)
-    .then((res) => (res.status === 200 ? res.json() : false));
-
-  return res;
+  try {
+    const res = await fetch(`${apiUrl}/rooms/${id}`, requestOptions); // แก้เป็น /rooms
+    if (res.ok) {
+      return await res.json(); // แปลงผลลัพธ์เป็น JSON หากสำเร็จ
+    } else {
+      console.error("ไม่พบข้อมูลห้อง ID นี้");
+      return false;
+    }
+  } catch (error) {
+    console.error("ข้อผิดพลาด:", error);
+    return false;
+  }
 }
 
-// POST (Create) a new room
+// สร้างห้องใหม่
 export async function CreateRoom(data: RoomInterface) {
   const requestOptions = {
     method: "POST",
@@ -40,38 +56,59 @@ export async function CreateRoom(data: RoomInterface) {
     body: JSON.stringify(data),
   };
 
-  const res = await fetch(`${apiUrl}/rooms`, requestOptions)
-    .then((res) => (res.status === 201 ? res.json() : false));
-
-  return res;
+  try {
+    const res = await fetch(`${apiUrl}/rooms`, requestOptions); // แก้เป็น /rooms
+    if (res.ok) {
+      return await res.json(); // แปลงผลลัพธ์เป็น JSON หากสำเร็จ
+    } else {
+      console.error("ไม่สามารถสร้างห้องได้");
+      return false;
+    }
+  } catch (error) {
+    console.error("ข้อผิดพลาด:", error);
+    return false;
+  }
 }
 
-// PATCH (Update) an existing room
-export async function UpdateRoomById(p0: number, data: RoomInterface) {
+// อัปเดตข้อมูลห้อง
+export async function UpdateRoomById(id: number, data: RoomInterface) {
   const requestOptions = {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   };
 
-  const res = await fetch(`${apiUrl}/rooms/${data.ID}`, requestOptions)
-    .then((res) => (res.status === 200 ? res.json() : false));
-
-  return res;
+  try {
+    const res = await fetch(`${apiUrl}/rooms/${id}`, requestOptions); // แก้เป็น /rooms
+    if (res.ok) {
+      return await res.json(); // แปลงผลลัพธ์เป็น JSON หากสำเร็จ
+    } else {
+      console.error("ไม่สามารถอัปเดตข้อมูลห้องได้");
+      return false;
+    }
+  } catch (error) {
+    console.error("ข้อผิดพลาด:", error);
+    return false;
+  }
 }
 
-// DELETE a room by ID
+// ลบห้อง
 export async function DeleteRoomById(id: number) {
-    try {
-      const requestOptions = {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      };
-      const res = await fetch(`${apiUrl}/rooms/${id}`, requestOptions);
-      return res.status === 200 ? { status: 200 } : { status: res.status, error: true };
-    } catch (e) {
-      console.error("Error deleting room:", e);
-      return { status: 500, error: true };
+  const requestOptions = {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  };
+
+  try {
+    const res = await fetch(`${apiUrl}/rooms/${id}`, requestOptions); // แก้เป็น /rooms
+    if (res.ok) {
+      return { status: res.status };
+    } else {
+      console.error("ไม่สามารถลบห้องได้");
+      return { status: res.status, error: true };
     }
+  } catch (error) {
+    console.error("ข้อผิดพลาด:", error);
+    return { status: 500, error: true };
   }
-  
+}

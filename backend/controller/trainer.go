@@ -9,7 +9,7 @@ import (
 )
 
 // ดึงข้อมูล Trainer ทั้งหมด
-func GetAll(c *gin.Context) {
+func GetAllTrainer(c *gin.Context) {
 	var trainers []entity.Trainers
 	db := config.DB()
 	results := db.Preload("Gender").Find(&trainers)
@@ -23,7 +23,7 @@ func GetAll(c *gin.Context) {
 }
 
 // ดึงข้อมูล Trainer ตาม ID
-func GetByID(c *gin.Context) {
+func GetByIDTrainer(c *gin.Context) {
 	id := c.Param("id")
 	var trainer entity.Trainers
 	db := config.DB()
@@ -38,7 +38,7 @@ func GetByID(c *gin.Context) {
 }
 
 // สร้าง Trainer ใหม่
-func Create(c *gin.Context) {
+func CreateTrainer(c *gin.Context) {
 	var trainer entity.Trainers
 	if err := c.ShouldBindJSON(&trainer); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request, unable to map payload"})
@@ -56,7 +56,7 @@ func Create(c *gin.Context) {
 }
 
 // อัปเดตข้อมูล Trainer
-func Update(c *gin.Context) {
+func UpdateTrainer(c *gin.Context) {
 	id := c.Param("id")
 	var trainer entity.Trainers
 	db := config.DB()
@@ -82,7 +82,7 @@ func Update(c *gin.Context) {
 }
 
 // ลบ Trainer
-func Delete(c *gin.Context) {
+func DeleteTrainer(c *gin.Context) {
 	id := c.Param("id")
 	db := config.DB()
 	if tx := db.Delete(&entity.Trainers{}, id); tx.RowsAffected == 0 {

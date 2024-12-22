@@ -24,7 +24,10 @@ const Navbar: React.FC = () => {
           <Link to="/Promotion">Promotion</Link>
         </li>
         <li>
-          <Link to="/Room">Room</Link>
+          <Link to="/rooms">Room</Link>
+        </li>
+        <li>
+          <Link to="/trainer">Trainer</Link>
         </li>
         <li className="notification">
           <div className="icon-wrapper" onClick={handleNotificationClick}>

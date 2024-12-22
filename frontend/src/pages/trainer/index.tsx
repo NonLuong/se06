@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Space, Table, Button, Col, Row, Divider, message, Popconfirm } from "antd";
-import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
+import { HomeOutlined, PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import { GetTrainers, DeleteTrainerById } from "../../services/https/TainerAPI";
 import { TrainersInterface } from "../../interfaces/ITrainer";
@@ -10,38 +10,43 @@ import dayjs from "dayjs";
 function Trainers() {
   const navigate = useNavigate();
   const [trainers, setTrainers] = useState<TrainersInterface[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [messageApi, contextHolder] = message.useMessage();
 
   // ฟังก์ชันดึงข้อมูลเทรนเนอร์
   const getTrainers = async () => {
-    let res = await GetTrainers();
-
-    if (res.status == 200) {
-      setTrainers(res.data);
-    } else {
-      setTrainers([]);
-      messageApi.open({
-        type: "error",
-        content: res.data.error,
-      });
+    setLoading(true);
+    try {
+      const res = await GetTrainers();
+      if (res.status === 200 && Array.isArray(res.data)) {
+        setTrainers(res.data); // กำหนดค่า res.data หากเป็น array
+      } else {
+        messageApi.error(res.error || "ไม่สามารถดึงข้อมูลเทรนเนอร์ได้");
+        setTrainers([]); // ตั้งค่าเป็น array เปล่าในกรณีที่ res.data ไม่ถูกต้อง
+      }
+    } catch (error) {
+      messageApi.error("เกิดข้อผิดพลาดในการดึงข้อมูล");
+      console.error("Error fetching trainers:", error);
+      setTrainers([]); // ตั้งค่าเป็น array เปล่าในกรณีที่เกิดข้อผิดพลาด
     }
+    setLoading(false);
   };
 
   // ฟังก์ชันลบเทรนเนอร์
+  // ฟังก์ชันลบเทรนเนอร์
   const deleteTrainer = async (id: number) => {
-    let res = await DeleteTrainerById(id); // เรียกใช้ฟังก์ชัน DeleteTrainerById
-  
-    if (res && res.status === 200) { // ตรวจสอบว่า res มีค่าและ status = 200
-      messageApi.open({
-        type: "success",
-        content: res.data?.message || "ลบสำเร็จ",
-      });
-      await getTrainers(); // ดึงข้อมูลใหม่
-    } else {
-      messageApi.open({
-        type: "error",
-        content: res?.data?.error || "ไม่สามารถลบได้",
-      });
+    try {
+      const res = await DeleteTrainerById(id); // เรียกใช้ DeleteTrainerById
+
+      if (res.status === 200 && res.data) {
+        messageApi.success(res.data.message || "ลบสำเร็จ");
+        getTrainers(); // อัปเดตข้อมูลใหม่
+      } else {
+        messageApi.error(res.error || "ไม่สามารถลบข้อมูลได้");
+      }
+    } catch (error) {
+      messageApi.error("เกิดข้อผิดพลาดในการลบข้อมูล");
+      console.error("Error deleting trainer:", error);
     }
   };
 
@@ -53,63 +58,68 @@ function Trainers() {
     {
       title: "ลำดับ",
       key: "index",
-      render: (_: any, __: any, index: number) => index + 1, // คำนวณลำดับเริ่มต้นที่ 1
+      render: (_: any, __: any, index: number) => index + 1,
     },
     {
       title: "ชื่อ",
       dataIndex: "first_name",
       key: "first_name",
+      render: (text) => text || "ไม่มีข้อมูล",
     },
     {
       title: "นามสกุล",
       dataIndex: "last_name",
       key: "last_name",
+      render: (text) => text || "ไม่มีข้อมูล",
     },
     {
       title: "อีเมล",
       dataIndex: "email",
       key: "email",
+      render: (text) => text || "ไม่มีข้อมูล",
     },
     {
       title: "วัน/เดือน/ปี เกิด",
       key: "birthday",
-      render: (record) => <>{dayjs(record.birthday).format("DD/MM/YYYY")}</>,
+      render: (record) => (
+        <>{record.birthday ? dayjs(record.birthday).format("DD/MM/YYYY") : "ไม่มีข้อมูล"}</>
+      ),
     },
     {
       title: "อายุ",
       dataIndex: "age",
       key: "age",
+      render: (age) => age || "ไม่มีข้อมูล",
     },
     {
       title: "เพศ",
       key: "gender",
-      render: (record) => <>{record?.gender?.gender}</>,
+      render: (record) => <>{record.gender?.gender || "ไม่มีข้อมูล"}</>,
     },
     {
-      title: "",
+      title: "การกระทำ",
       render: (record) => (
         <Space>
-          {/* ปุ่มแก้ไข */}
           <Button
             type="primary"
-            onClick={() => navigate(`/trainers/edit/${record.ID}`)}
+            onClick={() => navigate(`/trainer/edit/${record.ID}`)}
           >
             แก้ไขข้อมูล
           </Button>
-  
-          {/* ปุ่มลบ พร้อมยืนยัน */}
           <Popconfirm
             title="ยืนยันการลบเทรนเนอร์นี้?"
             onConfirm={() => deleteTrainer(record.ID)}
             okText="ใช่"
             cancelText="ไม่"
           >
-            <Button type="dashed" danger icon={<DeleteOutlined />} />
+            <Button type="dashed" danger icon={<DeleteOutlined />}>
+              ลบ
+            </Button>
           </Popconfirm>
         </Space>
       ),
     },
-  ];  
+  ];
 
   return (
     <>
@@ -120,7 +130,12 @@ function Trainers() {
         </Col>
         <Col span={12} style={{ textAlign: "end", alignSelf: "center" }}>
           <Space>
-            <Link to="/trainers/create">
+            <Link to="/">
+              <Button type="default" icon={<HomeOutlined />}>
+                หน้าแรก
+              </Button>
+            </Link>
+            <Link to="/trainer/create">
               <Button type="primary" icon={<PlusOutlined />}>
                 สร้างข้อมูล
               </Button>
@@ -129,14 +144,13 @@ function Trainers() {
         </Col>
       </Row>
       <Divider />
-      <div style={{ marginTop: 20 }}>
-        <Table
-          rowKey="ID"
-          columns={columns}
-          dataSource={trainers}
-          style={{ width: "100%", overflow: "scroll" }}
-        />
-      </div>
+      <Table
+        rowKey="ID"
+        columns={columns}
+        dataSource={trainers}
+        loading={loading}
+        style={{ width: "100%", marginTop: 20 }}
+      />
     </>
   );
 }

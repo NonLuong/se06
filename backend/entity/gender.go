@@ -7,7 +7,7 @@ import (
 
 type Gender struct {
     gorm.Model  
-    GenderName string      `json:"gender_name"`
+    Gender string      `json:"gender"`
     Passengers []Passenger `gorm:"foreignKey:GenderID" json:"passengers"` // ความสัมพันธ์ hasMany
 	
     Drivers    []Driver    `gorm:"foreignKey:GenderID" json:"drivers"` // ความสัมพันธ์ hasMany

@@ -16,10 +16,10 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import { TrainersInterface } from "../../../interfaces/ITrainer";
 import { Gender } from "../../../interfaces/IGender";
-import { GetTrainerById, UpdateTrainerById,} from "../../../services/https/TainerAPI";
-//import { GetGender };
+import { GetTrainerById, UpdateTrainerById } from "../../../services/https/TainerAPI";
 import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
+import { GetGender } from "../../../services/https/GenderAPI";
 
 function TrainerEdit() {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ function TrainerEdit() {
   const [gender, setGender] = useState<Gender[]>([]);
   const [form] = Form.useForm();
 
-  // ดึงข้อมูลเพศ
+  // Fetch gender data
   const fetchGenders = async () => {
     try {
       const res = await GetGender();
@@ -43,18 +43,18 @@ function TrainerEdit() {
     }
   };
 
-  // ดึงข้อมูลเทรนเนอร์ตาม ID
+  // Fetch trainer data by ID
   const fetchTrainerById = async (trainerId: string) => {
     try {
       const res = await GetTrainerById(trainerId);
       if (res.status === 200) {
         form.setFieldsValue({
-          first_name: res.data.first_name,
-          last_name: res.data.last_name,
-          email: res.data.email,
-          birthday: dayjs(res.data.birthday),
-          age: res.data.age,
-          gender_id: res.data.gender_id,
+          first_name: res.data?.FirstName,
+          last_name: res.data?.LastName,
+          email: res.data?.Email,
+          birthday: dayjs(res.data?.BirthDay),
+          age: res.data?.Age,
+          gender_id: res.data?.GenderID,
         });
       } else {
         messageApi.error("ไม่พบข้อมูลเทรนเนอร์");
@@ -65,34 +65,41 @@ function TrainerEdit() {
     }
   };
 
-  // ฟังก์ชันสำหรับบันทึกการแก้ไข
-  const onFinish = async (values: TrainersInterface) => {
+  // Handle form submission
+  const onFinish = async (values: any) => {
     const payload: TrainersInterface = {
-      FirstName: values.FirstName || "",
-      LastName: values.LastName || "",
-      Email: values.Email || "",
-      Phone: values.Phone || "",
-      BirthDay: values.BirthDay ? dayjs(values.BirthDay).toISOString() : "",
-      Age: values.Age || 0,
-      GenderID: values.GenderID || 0,
+      FirstName: values.first_name,
+      LastName: values.last_name,
+      Email: values.email,
+      BirthDay: values.birthday?.toISOString(),
+      Age: values.age,
+      GenderID: values.gender_id,
+      message: "",
     };
-  
+
     try {
-      const res = await UpdateTrainerById(id!, payload); // id เป็น string หรือ number ต้องตรงกับประเภท
+      const parsedId = parseInt(id || "", 10);
+      if (isNaN(parsedId)) {
+        throw new Error("Invalid trainer ID");
+      }
+
+      const res = await UpdateTrainerById(parsedId, payload);
       if (res.status === 200) {
-        messageApi.success("แก้ไขข้อมูลสำเร็จ!");
+        messageApi.success("แก้ไขข้อมูลสำเร็จ");
         navigate("/trainers");
       } else {
-        messageApi.error(res.data?.error || "เกิดข้อผิดพลาด");
+        throw new Error(res.error || "เกิดข้อผิดพลาดในการแก้ไขข้อมูล");
       }
-    } catch (error) {
-      messageApi.error("ไม่สามารถแก้ไขข้อมูลได้");
+    } catch (error: any) {
+      messageApi.error(error.message || "ไม่สามารถแก้ไขข้อมูลได้");
     }
-  };    
+  };
 
   useEffect(() => {
-    fetchGenders();
-    fetchTrainerById(id!);
+    if (id) {
+      fetchGenders();
+      fetchTrainerById(id);
+    }
   }, [id]);
 
   return (
@@ -102,9 +109,8 @@ function TrainerEdit() {
         <h2>แก้ไขข้อมูล เทรนเนอร์</h2>
         <Divider />
         <Form
-          name="basic"
-          layout="vertical"
           form={form}
+          layout="vertical"
           onFinish={onFinish}
           autoComplete="off"
         >
@@ -113,12 +119,7 @@ function TrainerEdit() {
               <Form.Item
                 label="ชื่อจริง"
                 name="first_name"
-                rules={[
-                  {
-                    required: true,
-                    message: "กรุณากรอกชื่อ!",
-                  },
-                ]}
+                rules={[{ required: true, message: "กรุณากรอกชื่อ!" }]}
               >
                 <Input />
               </Form.Item>
@@ -128,12 +129,7 @@ function TrainerEdit() {
               <Form.Item
                 label="นามสกุล"
                 name="last_name"
-                rules={[
-                  {
-                    required: true,
-                    message: "กรุณากรอกนามสกุล!",
-                  },
-                ]}
+                rules={[{ required: true, message: "กรุณากรอกนามสกุล!" }]}
               >
                 <Input />
               </Form.Item>
@@ -144,14 +140,8 @@ function TrainerEdit() {
                 label="อีเมล"
                 name="email"
                 rules={[
-                  {
-                    type: "email",
-                    message: "รูปแบบอีเมลไม่ถูกต้อง!",
-                  },
-                  {
-                    required: true,
-                    message: "กรุณากรอกอีเมล!",
-                  },
+                  { type: "email", message: "รูปแบบอีเมลไม่ถูกต้อง!" },
+                  { required: true, message: "กรุณากรอกอีเมล!" },
                 ]}
               >
                 <Input />
@@ -162,12 +152,7 @@ function TrainerEdit() {
               <Form.Item
                 label="วัน/เดือน/ปี เกิด"
                 name="birthday"
-                rules={[
-                  {
-                    required: true,
-                    message: "กรุณาเลือกวัน/เดือน/ปี เกิด!",
-                  },
-                ]}
+                rules={[{ required: true, message: "กรุณาเลือกวัน/เดือน/ปี เกิด!" }]}
               >
                 <DatePicker style={{ width: "100%" }} />
               </Form.Item>
@@ -177,12 +162,7 @@ function TrainerEdit() {
               <Form.Item
                 label="อายุ"
                 name="age"
-                rules={[
-                  {
-                    required: true,
-                    message: "กรุณากรอกอายุ!",
-                  },
-                ]}
+                rules={[{ required: true, message: "กรุณากรอกอายุ!" }]}
               >
                 <InputNumber min={1} max={99} style={{ width: "100%" }} />
               </Form.Item>
@@ -192,17 +172,12 @@ function TrainerEdit() {
               <Form.Item
                 label="เพศ"
                 name="gender_id"
-                rules={[
-                  {
-                    required: true,
-                    message: "กรุณาเลือกเพศ!",
-                  },
-                ]}
+                rules={[{ required: true, message: "กรุณาเลือกเพศ!" }]}
               >
                 <Select placeholder="เลือกเพศ">
                   {gender.map((item) => (
                     <Select.Option key={item.ID} value={item.ID}>
-                      {item.GenderName}
+                      {item.gender}
                     </Select.Option>
                   ))}
                 </Select>

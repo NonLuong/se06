@@ -56,6 +56,14 @@ func SetupDatabase() {
 
 	)
 
+	GenderMale := entity.Gender{Gender: "Male"}
+	
+	GenderFemale := entity.Gender{Gender: "Female"}
+ 
+	db.FirstOrCreate(&GenderMale, &entity.Gender{Gender: "Male"})
+ 
+	db.FirstOrCreate(&GenderFemale, &entity.Gender{Gender: "Female"})
+
 	promotions := []entity.Promotion{
 		{
 			PromotionCode:        "DRIVE001",

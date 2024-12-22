@@ -29,7 +29,7 @@ import EditRoom from "./pages/room/edit";
 import Trainbook from "./pages/room/trainbook";
 import Trainer from "./pages/trainer";
 import CreateTrainer from "./pages/trainer/create";
-import EditTrainer from "./pages/trainer/edit";
+import EditTrainer from './pages/trainer/edit';
 
 const App: React.FC = () => {
   return (
@@ -64,21 +64,14 @@ const App: React.FC = () => {
         <Route path="/review/history" element={<History/>} /> 
         <Route path="/edit" element={<Edit/>} /> 
 
-        {/*ฟร้อง Payment and Review */}
-        <Route path="/paid" element={< HomePayment />} /> 
-        <Route path="/review" element={<Review/>} /> 
-        <Route path="/payment" element={<Payment/>} /> 
-        <Route path="/review/history" element={<History/>} /> 
-        <Route path="/edit" element={<Edit/>} /> 
-
         {/*นนท์ Room and Trainer */}
-        <Route path="/room" element={<Room />} />
-        <Route path="/room/create" element={<CreateRoom />} />
-        <Route path="/room/edit/:id" element={<EditRoom />} />
-        <Route path="/room/trainbook/:id" element={<Trainbook />} />
-        <Route path="/trainers" element={<Trainer />} />
-        <Route path="/trainers/create" element={<CreateTrainer />} />
-        <Route path="/trainers/edit/:id" element={<EditTrainer />} />
+        <Route path="/rooms" element={<Room />} />
+        <Route path="/rooms/create" element={<CreateRoom />} />
+        <Route path="/rooms/edit/:id" element={<EditRoom />} />
+        <Route path="/rooms/trainbook/:id" element={<Trainbook />} />
+        <Route path="/trainer" element={<Trainer />} />
+        <Route path="/trainer/create" element={<CreateTrainer />} />
+        <Route path="/trainer/edit/:id" element={<EditTrainer />} />
 
 
 

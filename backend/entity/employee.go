@@ -17,7 +17,7 @@ type Employee struct {
     Password        string
     
     GendersID       uint
-    Genders         Genders `gorm:"foreignKey:GendersID"`
+    Genders         Gender `gorm:"foreignKey:GendersID"`
 
     RolesID         uint
     Roles           Roles   `gorm:"foreignKey:RolesID"`

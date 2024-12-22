@@ -1,13 +1,13 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
 	"project-se/config"
 	"project-se/controller"
 	"project-se/middlewares"
-	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
 )
 
 // WebSocket Upgrader
@@ -19,7 +19,7 @@ var upgrader = websocket.Upgrader{
 
 // เก็บการเชื่อมต่อ WebSocket ของแต่ละห้อง
 var clients = make(map[string]map[*websocket.Conn]bool) // map[roomID] -> set of connections
-var broadcast = make(chan controller.Message)          // ใช้ Message จาก controller
+var broadcast = make(chan controller.Message)           // ใช้ Message จาก controller
 
 // WebSocket Handler
 func handleWebSocketConnections(c *gin.Context) {
@@ -133,10 +133,9 @@ func registerRoutes(r *gin.Engine) {
 	r.GET("/ws", handleWebSocketConnections)
 
 	// Messages
-	r.GET("/messages", controller.GetAllMessages)                         // ดึงข้อความทั้งหมด
-	r.POST("/messages", controller.CreateMessage)                        // สร้างข้อความใหม่
+	r.GET("/messages", controller.GetAllMessages)                            // ดึงข้อความทั้งหมด
+	r.POST("/messages", controller.CreateMessage)                            // สร้างข้อความใหม่
 	r.GET("/messages/booking/:bookingID", controller.GetMessagesByBookingID) // ดึงข้อความตาม Booking ID
-
 
 	// Promotion Routes
 	r.GET("/promotions", controller.GetAllPromotion)
@@ -148,6 +147,23 @@ func registerRoutes(r *gin.Engine) {
 	r.GET("/discounttype", controller.GetAllD) // ใช้ฟังก์ชัน GetAllD จาก package discounttype
 
 	r.GET("/statuses", controller.GetAllStatus) // เพิ่มเส้นทางสำหรับ Status
+
+	// Routes สำหรับ Room
+	r.GET("/rooms", controller.GetRooms)          // ดึงข้อมูลห้องทั้งหมด
+	r.GET("/rooms/:id", controller.GetRoomByID)   // ดึงข้อมูลห้องตาม ID
+	r.POST("/rooms", controller.CreateRoom)       // สร้างห้องใหม่
+	r.PATCH("/rooms/:id", controller.UpdateRoom)  // อัปเดตข้อมูลห้อง
+	r.DELETE("/rooms/:id", controller.DeleteRoom) // ลบห้อง
+
+	// Routes สำหรับ Trainer
+	r.GET("/trainers", controller.GetAllTrainer)       // ดึงข้อมูล Trainer ทั้งหมด
+	r.GET("/trainers/:id", controller.GetByIDTrainer)  // ดึงข้อมูล Trainer ตาม ID
+	r.POST("/trainers", controller.CreateTrainer)      // สร้าง Trainer ใหม่
+	r.PATCH("/trainers/:id", controller.UpdateTrainer) // อัปเดตข้อมูล Trainer
+	r.DELETE("/trainers/:id", controller.DeleteTrainer) // ลบ Trainer
+
+	r.GET("/gender", controller.GetAllGender)       // ดึงข้อมูล Gender ทั้งหมด
+	r.GET("/gender/:id", controller.GetGenderByID)       // ดึงข้อมูล Gender ตาม ID
 
 	// Protected Routes (ต้องตรวจสอบ JWT)
 	protected := r.Group("/api", middlewares.Authorizes())

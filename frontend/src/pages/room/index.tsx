@@ -10,7 +10,7 @@ import {
   Empty,
   Popconfirm,
 } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined, DeleteOutlined, HomeOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import { GetRooms, DeleteRoomById } from "../../services/https/RoomAPI";
 import { RoomInterface } from "../../interfaces/IRoom";
@@ -27,14 +27,21 @@ function Rooms() {
     setLoading(true);
     try {
       const res = await GetRooms();
-      if (res.status === 200 && Array.isArray(res.data)) {
-        setRooms(res.data);
+      if (res && Array.isArray(res)) {
+        const mappedRooms = res.map((room: any) => ({
+          ID: room.ID,
+          RoomName: room.room_name,
+          Capacity: room.capacity,
+          CurrentBookings: room.current_bookings || 0,
+        }));
+        setRooms(mappedRooms);
       } else {
         messageApi.error("ไม่สามารถดึงข้อมูลได้");
         setRooms([]);
       }
     } catch (error) {
       messageApi.error("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
+      console.error("Error fetching rooms:", error);
     }
     setLoading(false);
   };
@@ -50,11 +57,12 @@ function Rooms() {
       }
     } catch (error) {
       messageApi.error("เกิดข้อผิดพลาดในการลบห้อง");
+      console.error("Error deleting room:", error);
     }
   };
 
   const handleBooking = (id: number) => {
-    navigate(`/room/trainbook/${id}`);
+    navigate(`/rooms/trainbook/${id}`);
   };
 
   useEffect(() => {
@@ -94,7 +102,7 @@ function Rooms() {
               <Button
                 type="primary"
                 icon={<EditOutlined />}
-                onClick={() => navigate(`/room/edit/${record.ID}`)}
+                onClick={() => navigate(`/rooms/edit/${record.ID}`)}
               >
                 แก้ไข
               </Button>
@@ -126,11 +134,18 @@ function Rooms() {
         </Col>
         <Col span={12} style={{ textAlign: "right" }}>
           {userRole === "admin" && (
-            <Link to="/room/create">
-              <Button type="primary" icon={<PlusOutlined />}>
-                สร้างห้อง
-              </Button>
-            </Link>
+            <Space>
+              <Link to="/">
+                <Button type="default" icon={<HomeOutlined />}>
+                  หน้าแรก
+                </Button>
+              </Link>
+              <Link to="/rooms/create">
+                <Button type="primary" icon={<PlusOutlined />}>
+                  สร้างห้อง
+                </Button>
+              </Link>
+            </Space>
           )}
         </Col>
       </Row>

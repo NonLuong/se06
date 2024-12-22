@@ -25,6 +25,6 @@ type Trainers struct {
 
    GenderID  uint      `json:"gender_id"`
 
-   Gender    *Genders  `gorm:"foreignKey: gender_id" json:"gender"`
+   Gender    *Gender  `gorm:"foreignKey: gender_id" json:"gender"`
 
 }
