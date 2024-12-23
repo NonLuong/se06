@@ -145,9 +145,16 @@ func registerRoutes(r *gin.Engine) {
 	r.POST("/promotion", controller.CreatePromotion)
 	r.PUT("/promotion/:id", controller.UpdatePromotion)
 	r.DELETE("/promotion/:id", controller.DeletePromotion)
-	//promotion new
+	//promotion Chrilden
 	r.GET("/discounttype", controller.GetAllD)
 	r.GET("/statuspromotion", controller.GetAllStatus)
+
+	// Withdrawal Routes
+	r.POST("/withdrawal/money", controller.CreateWithdrawal) 
+	r.GET("/withdrawal/statement", controller.GetAllWithdrawal) // เพิ่มเส้นทางดึงข้อมูลการถอนเงินทั้งหมด
+	r.GET("/withdrawal/statement/:id", controller.GetWithdrawal)  // เพิ่มเส้นทางดึงข้อมูลการถอนเงินตาม ID
+	// Withdrawal Chrilden
+	r.GET("/bankname", controller.GetAllBankName) 
 
 	// Routes สำหรับ Room
 	r.GET("/rooms", controller.GetRooms)          // ดึงข้อมูลห้องทั้งหมด
