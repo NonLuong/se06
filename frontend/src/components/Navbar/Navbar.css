@@ -32,6 +32,7 @@
 }
 
 .profile-icon-wrapper:hover {
-  background-color: #ddb6ec; /* เปลี่ยนสีพื้นหลังเมื่อ hover */
-  transition: background-color 0.3s;
+  background-color: #783195; /* เปลี่ยนสีพื้นหลังเมื่อ hover */
+  transition: background-color 0.5s;
+
 }
