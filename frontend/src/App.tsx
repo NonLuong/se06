@@ -37,6 +37,7 @@ import EditEmployee from "./pages/Employee/EditEmployee";
 import AddEmployee from "./pages/Employee/AddEmployee";
 import Vehicle from "./pages/Vehicle/Vehicle";
 import DriverBooking from "./pages/DriverBooking/DriverBooking";
+import { CreatePromotion } from "./services/https/PromotionAPI";
 
 
 const App: React.FC = () => {
@@ -66,7 +67,11 @@ const App: React.FC = () => {
 
 
        {/*ต้อง* promotion */}
-        <Route path="/Promotion" element={< View />} /> 
+        <Route path="/promotion" element={< Promotion />} />
+        <Route path="/promotion/create" element={< PromotionCreate />} />
+        <Route path="/promotion/edit/:id" element={< PromotionEdit />} />
+        <Route path="/promotion/view" element={< View />} />
+        
 
 
 

@@ -14,7 +14,7 @@ export interface PromotionInterface {
   photo: string;
   DiscountTypeID: string;
   discount: number;
-  status_id: number;
+  status_promotion_id: number;
   use_limit: number;
   use_count: number;
   distance: number;
@@ -26,7 +26,6 @@ function View() {
   const [promotions, setPromotions] = useState<PromotionInterface[]>([]);
   const [messageApi, contextHolder] = message.useMessage();
 
-  // Fetch promotions data
   const getPromotions = async () => {
     try {
       const res = await GetPromotions();
@@ -41,17 +40,14 @@ function View() {
     }
   };
 
-  // Fetch data on component mount
   useEffect(() => {
     getPromotions();
   }, []);
 
-  // Function to format date
   const formatDate = (date: string) => {
     return dayjs(date).format("DD/MM/YYYY");
   };
 
-  // Render promotion status
   const renderStatus = (statusId: number) => {
     if (statusId === 1) {
       return <Tag color="green" style={{ fontSize: '15px', padding: '5px 10px', borderRadius: '5px' }}>ใช้งานได้</Tag>;
@@ -62,7 +58,6 @@ function View() {
     return <Tag color="default" style={{ fontSize: '24px', padding: '10px 20px', borderRadius: '20px' }}>ไม่ระบุ</Tag>;
   };
 
-  // Function to handle promo code copy
   const copyPromoCode = (code: string) => {
     navigator.clipboard.writeText(code);
     messageApi.success("คัดลอกรหัสโปรโมชั่นแล้ว");
@@ -71,14 +66,8 @@ function View() {
   return (
     <>
       {contextHolder}
-      <Row>
-        <Col span={24}>
-          <h2>โปรโมชั่นทั้งหมด</h2>
-        </Col>
-      </Row>
       <Divider />
       <div style={{ marginTop: 20 }}>
-        {/* Loop through the promotions and display each one in a new row */}
         {promotions.map((promotion) => (
           <Row gutter={[16, 16]} key={promotion.id} style={{ marginBottom: 20 }}>
             <Col span={24}>
@@ -96,7 +85,6 @@ function View() {
                 }}
               >
                 <Row gutter={16} style={{ display: "flex", alignItems: "center", width: "100%" }}>
-                  {/* Promotion Image */}
                   <Col span={8}>
                     <Image
                       alt={promotion.promotion_name ?? "Default Alt Text"}
@@ -106,13 +94,12 @@ function View() {
                         height: "330px",
                         objectFit: "cover",
                         borderRadius: "20px",
+                        border: "3px solid #DAD6EF",  // กรอบรอบรูปภาพ
                       }}
                     />
                   </Col>
-                  {/* Promotion Info */}
                   <Col span={16}>
                     <Row gutter={[16, 16]}>
-                      {/* Promotion Name and Discount */}
                       <Col span={24}>
                         <div
                           style={{
@@ -140,7 +127,6 @@ function View() {
                         </div>
                       </Col>
 
-                      {/* Promotion Code and Status */}
                       <Col span={24}>
                         <Row justify="space-between" align="middle" style={{ position: "relative" }}>
                           <Col>
@@ -156,7 +142,7 @@ function View() {
                               ใส่รหัส {promotion.promotion_code}
                               <Button
                                 type="text"
-                                icon={<CopyOutlined style={{ fontSize: "26px" }} />}  // Set the icon size here
+                                icon={<CopyOutlined style={{ fontSize: "26px" }} />}
                                 onClick={() => copyPromoCode(promotion.promotion_code)}
                                 style={{
                                   fontSize: "20px",
@@ -175,13 +161,12 @@ function View() {
 
                           <Col>
                             <div style={{ textAlign: "right" }}>
-                              {renderStatus(promotion.status_id)}
+                              {renderStatus(promotion.status_promotion_id)}
                             </div>
                           </Col>
                         </Row>
                       </Col>
 
-                      {/* Show Description */}
                       <Col span={24}>
                         <div
                           style={{
@@ -201,7 +186,6 @@ function View() {
                         </div>
                       </Col>
 
-                      {/* End Date and Other Details */}
                       <Col span={24}>
                         <div
                           style={{
