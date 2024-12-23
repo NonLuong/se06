@@ -13,7 +13,7 @@ func GetAllPromotion(c *gin.Context) {
 
 	db := config.DB()
 
-	// ดึงข้อมูลโปรโมชั่นทั้งหมด พร้อมข้อมูล DiscountType และ StatusPromotion
+	// ดึงข้อมูลโปรโมชั่นทั้งหมด พร้อมข้อมูล DiscountType และ Status
 	results := db.Preload("DiscountType").Preload("StatusPromotion").Find(&promotions)
 
 	if results.Error != nil {
@@ -32,7 +32,7 @@ func GetPromotion(c *gin.Context) {
 	db := config.DB()
 
 	// ค้นหาโปรโมชั่นโดย ID พร้อมข้อมูล DiscountType และ Status
-	results := db.Preload("DiscountType").Preload("Status").First(&promotion, ID)
+	results := db.Preload("DiscountType").Preload("StatusPromotion").First(&promotion, ID)
 
 	if results.Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
@@ -111,31 +111,4 @@ func DeletePromotion(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Promotion deleted successfully"})
-}
-
-// UsePromotion - ฟังก์ชันสำหรับเพิ่ม use_count ไป 1 เมื่อใช้โปรโมชั่น
-func UsePromotion(c *gin.Context) {
-	// รับ ID ของโปรโมชั่นจาก URL
-	id := c.Param("id")
-	var promotion entity.Promotion
-
-	db := config.DB()
-
-	// ค้นหาข้อมูลโปรโมชั่นโดยใช้ ID
-	if result := db.First(&promotion, id); result.Error != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Promotion not found"})
-		return
-	}
-
-	// เพิ่ม use_count ไป 1
-	promotion.UseCount++
-
-	// บันทึกข้อมูลที่อัปเดตลงในฐานข้อมูล
-	if result := db.Save(&promotion); result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update use count"})
-		return
-	}
-
-	// ส่งผลลัพธ์กลับ
-	c.JSON(http.StatusOK, gin.H{"message": "Promotion used successfully", "promotion": promotion})
 }
