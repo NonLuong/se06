@@ -160,6 +160,7 @@ const MapComponent: React.FC = () => {
       }
     } else {
       alert("กรุณาเลือกจุดเริ่มต้นก่อน");
+
     }
   };
   
@@ -174,7 +175,7 @@ const MapComponent: React.FC = () => {
     }
   };
 
-  if (!location) return <div>กำลังโหลดแผนที่...</div>;
+  if (!location) return <div>กำลังโหลดแผนที่.....</div>;
 
   return (
     <div className="mapcomponent"style={{ position: 'relative' }}>
