@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
-import { Space, Table, Button, Col, Row, Divider, message, Image, Input } from "antd";
+import { Table, Button, Col, Row, Divider, message, Image, Input } from "antd";
 import { PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";  // นำเข้า EditOutlined
 import type { ColumnsType } from "antd/es/table";
 import { GetPromotions, DeletePromotionById } from "../../services/https/indexpromotion";
 import { PromotionInterface } from "../../interfaces/IPromotion";
 import { Link, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+
+// นำเข้าคลาส CSS
+import "./Promotion.css";
 
 function Promotion() {
   const navigate = useNavigate();
@@ -18,65 +21,90 @@ function Promotion() {
   // Columns for the table
   const columns: ColumnsType<PromotionInterface> = [
     {
-      title: "ภาพโปรโมชัน",
+      title: "รูปภาพ",
       dataIndex: "photo",
       key: "photo",
-      render: (text) =>
-        text ? (
-          <Image width={50} src={text} alt="Promotion" />
-        ) : (
-          "-"
-        ),
+      render: (text) => text ? <Image width={50} src={text} alt="Promotion" /> : "-",
+      align: "center", // จัดตำแหน่งหัวข้อและเนื้อหากลาง
     },
     {
-      title: "รหัสโปรโมชั่น",
+      title: "CODE",
       dataIndex: "promotion_code",
       key: "promotion_code",
+      align: "center", // จัดตำแหน่งหัวข้อและเนื้อหากลาง
     },
     {
       title: "ชื่อโปรโมชั่น",
       dataIndex: "promotion_name",
       key: "promotion_name",
-    },
-    {
-      title: "ประเภทส่วนลด",
-      dataIndex: "discount_type_id",
-      key: "discount_type_id",
-      render: (text) => {
-        if (text === 1) return "จำนวนเงิน (฿)";
-        if (text === 2) return "เปอร์เซ็นต์ (%)";
-        return "ไม่ระบุ"; // Fallback for any other values
-      },
-    },
-    {
-      title: "ส่วนลด ",
-      dataIndex: "discount",
-      key: "discount",
+      align: "center", // จัดตำแหน่งหัวข้อและเนื้อหากลาง
     },
     {
       title: "สถานะ",
-      dataIndex: "status_id",
-      key: "status_id",
+      dataIndex: "status_promotion_id",
+      key: "status_promotion_id",
       render: (text) => {
-        if (text === 1) return "ใช้งานได้"; // Active
-        if (text === 2) return "ปิดการใช้งาน"; // Expired
-        return "ไม่ระบุ"; // Fallback for any other values
+        if (text === 1) {
+          return (
+            <span style={{ color: "green", display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <CheckCircleOutlined style={{ marginRight: 5 }} />
+
+            </span>
+          );
+        }
+        if (text === 2) {
+          return (
+            <span style={{ color: "red", display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <CloseCircleOutlined style={{ marginRight: 5 }} />
+
+            </span>
+          );
+        }
+        return "ไม่ระบุ";
       },
+      align: "center", // จัดตำแหน่งหัวข้อและเนื้อหากลาง
     },
     {
-      title: "จำนวนครั้งที่ใช้ได้",
+      title: "ประเภท",
+      dataIndex: "discount_type_id",
+      key: "discount_type_id",
+      render: (text) => {
+        if (text === 1) return "จำนวนเงิน";
+        if (text === 2) return "เปอร์เซ็นต์";
+        return "ไม่ระบุ"; // Fallback for any other values
+      },
+      align: "center", // จัดตำแหน่งหัวข้อและเนื้อหากลาง
+    },
+    {
+      title: "ส่วนลด",
+      dataIndex: "discount",
+      key: "discount",
+      align: "center", // จัดตำแหน่งหัวข้อและเนื้อหากลาง
+    },
+    {
+      title: "จำนวนสิทธิ์",
       dataIndex: "use_limit",
       key: "use_limit",
+      align: "center", // จัดตำแหน่งหัวข้อและเนื้อหากลาง
+    },
+    {
+      title: "จำนวนที่ใช้สิทธิ์", // เพิ่มคอลัมน์นี้เพื่อแสดง use_count
+      dataIndex: "use_count",
+      key: "use_count",
+      render: (text) => text || 0, // ถ้าไม่มีค่าให้แสดง 0
+      align: "center", // จัดตำแหน่งหัวข้อและเนื้อหากลาง
     },
     {
       title: "ระยะทาง",
-      dataIndex: "distance",
-      key: "distance",
+      dataIndex: "distance_promotion",
+      key: "distance_promotion",
+      align: "center", // จัดตำแหน่งหัวข้อและเนื้อหากลาง
     },
     {
       title: "วันหมดเขต",
       key: "end_date",
       render: (record) => <>{dayjs(record.end_date).format("DD/MM/YYYY")}</>,
+      align: "center", // จัดตำแหน่งหัวข้อและเนื้อหากลาง
     },
     {
       title: "คำอธิบายโปรโมชั่น",
@@ -87,6 +115,7 @@ function Promotion() {
           {text || "-"}
         </div>
       ),
+      align: "center", // จัดตำแหน่งหัวข้อและเนื้อหากลาง
     },
     {
       title: "",
@@ -96,11 +125,12 @@ function Promotion() {
           danger
           icon={<DeleteOutlined />}
           onClick={() => deletePromotionById(record.ID!)} // ใช้ 'id' ตาม interface
-          style={{ borderColor: "#47456C", color: "#47456C" }} // สีปุ่มลบ
+          className="promotion-delete-button"
         >
           ลบ
         </Button>
       ),
+      align: "center", // จัดตำแหน่งหัวข้อและเนื้อหากลาง
     },
     {
       title: "",
@@ -114,14 +144,16 @@ function Promotion() {
               messageApi.error("ไม่พบข้อมูลโปรโมชั่นที่ต้องการแก้ไข");
             }
           }}
-          style={{ backgroundColor: "#575A83", borderColor: "#575A83" }} // สีปุ่มแก้ไข
+          className="promotion-edit-button"
           icon={<EditOutlined />} // เพิ่มไอคอน EditOutlined
         >
           แก้ไขข้อมูล
         </Button>
       ),
+      align: "center", // จัดตำแหน่งหัวข้อและเนื้อหากลาง
     },
   ];
+
 
   // Fetch promotions data
   const getPromotions = async () => {
@@ -177,38 +209,39 @@ function Promotion() {
   return (
     <>
       {contextHolder}
-      <Row>
-        <Col span={12}>
-          <h2 style={{ color: "#7F6BCC" }}>จัดการโปรโมชั่น</h2> {/* สีหัวข้อ */}
+      <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
+        <Col>
+          <h2 className="promotion-header">จัดการโปรโมชั่น</h2>
         </Col>
-        <Col span={12} style={{ textAlign: "right" }}>
-          <Space>
-            <Input
-              placeholder="ค้นหารหัสโปรโมชั่น"
-              value={searchTerm}
-              onChange={handleSearch}
-              style={{ width: 250 }}
-              prefix={<SearchOutlined />} // ใส่ไอคอนในช่องค้นหา
-            />
-            <Link to="/promotion/create">
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                style={{ backgroundColor: "#9333EA", borderColor: "#9333EA" }} // ปุ่มสร้าง
-              >
-                สร้างข้อมูล
-              </Button>
-            </Link>
-          </Space>
+        <Col style={{ textAlign: "right", display: "flex", gap: "10px" }}>
+          <Input
+            placeholder="ค้นหารหัสโปรโมชั่น"
+            value={searchTerm}
+            onChange={handleSearch}
+            style={{ width: 250 }}
+            prefix={<SearchOutlined />} // ใส่ไอคอนในช่องค้นหา
+          />
+          <Link to="/promotion/create">
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              className="promotion-button"
+            >
+              สร้างข้อมูล
+            </Button>
+          </Link>
         </Col>
       </Row>
+
       <Divider />
       <div style={{ marginTop: 20 }}>
         <Table
           rowKey="id"
           columns={columns}
           dataSource={filteredPromotions} // ใช้ข้อมูลที่กรองแล้ว
-          style={{ width: "100%" }}
+          className="promotion-table"
+          bordered
+          pagination={{ pageSize: 10 }} // กำหนดจำนวนแถวต่อหน้า
         />
       </div>
     </>

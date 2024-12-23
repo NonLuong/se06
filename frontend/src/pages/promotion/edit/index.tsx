@@ -28,7 +28,7 @@ function PromotionEdit() {
   const [messageApi, contextHolder] = message.useMessage();
   const [fileList, setFileList] = useState<any>([]); // Store uploaded files
   const [discountType, setDiscountType] = useState<"amount" | "percent">("amount");
-  const [status, setStatus] = useState<"active" | "expired">("active");
+  const [statusPromotion, setStatusPromotion] = useState<"active" | "expired">("active");
   const [form] = Form.useForm();
 
   // Fetch promotion data by ID
@@ -42,14 +42,14 @@ function PromotionEdit() {
         promotion_name: promotion.promotion_name || "",
         discount_type_id: promotion.discount_type_id === 2 ? "percent" : "amount", // Map to string
         discount: promotion.discount || "",
-        status_id: promotion.status_id === 1 ? "active" : "expired", // Map to string
+        status_promotion_id: promotion.status_promotion_id === 1 ? "active" : "expired", // Map to string
         use_limit: promotion.use_limit || 0,  // Default to 0 if not provided
-        distance: promotion.distance || null,  // Optional distance
+        distance_promotion: promotion.distance_promotion ,  // Optional distance_promotion
         end_date: promotion.end_date ? dayjs(promotion.end_date) : null,
         promotion_description: promotion.promotion_description || "",
       });
       setDiscountType(promotion.discount_type_id === 2 ? "percent" : "amount");
-      setStatus(promotion.status_id === 1 ? "active" : "expired");
+      setStatusPromotion(promotion.status_promotion_id === 1 ? "active" : "expired");
       setFileList(promotion.photo ? [{ url: promotion.photo }] : []);
     } else {
       messageApi.open({
@@ -67,7 +67,7 @@ function PromotionEdit() {
     const promotionData = {
       ...values,
       discount_type_id: discountType === "percent" ? 2 : 1, // Map to numeric value
-      status_id: status === "active" ? 1 : 2, // Map to numeric value
+      status_promotion_id: statusPromotion === "active" ? 1 : 2, // Map to numeric value
       photo: fileList.length > 0 ? fileList[0].thumbUrl : null,
     };
 
@@ -82,11 +82,8 @@ function PromotionEdit() {
         navigate("/promotion");
       }, 2000);
     } else {
-      messageApi.open({
-        type: "error",
-        content: res.data.error,
-      });
-    }
+      messageApi.error(res.error || "Update Promotion Failed");
+    }    
   };
 
   const onChange = ({ fileList: newFileList }: { fileList: any }) => {
@@ -143,7 +140,6 @@ function PromotionEdit() {
         <Card
           style={{
             width: "100%",
-            maxWidth: "800px",
             backgroundColor: "rgba(255, 255, 255, 0.7)",
             borderRadius: "8px",
             padding: "20px",
@@ -151,35 +147,10 @@ function PromotionEdit() {
             flexDirection: "column",
           }}
         >
-          <h2 style={{ color: "#6B21A8", textAlign: "center", fontSize: "29px", fontWeight: "bold", marginTop: 0 }}>
-            แก้ไขข้อมูล โปรโมชั่น
+          <h2 style={{ color: "#6B21A8", textAlign: "left", fontSize: "29px", fontWeight: "bold", marginTop: 0 }}>
+            แก้ไขข้อมูลโปรโมชั่น
           </h2>
           <Divider style={{ margin: "10px 0" }} />
-
-          {/* Image Upload */}
-          <Row justify="center" style={{ marginBottom: 16 }}>
-            <Col xs={4} style={{ textAlign: "center" }}>
-              <Form.Item label="รูปภาพโปรโมชั่น" name="photo">
-                <ImgCrop rotationSlider>
-                  <Upload
-                    listType="picture-card"
-                    fileList={fileList}
-                    onChange={onChange}
-                    onPreview={onPreview}
-                    beforeUpload={() => false}
-                    maxCount={1}
-                  >
-                    {fileList.length < 1 && (
-                      <div>
-                        <FileImageOutlined style={{ fontSize: "34px" }} />
-                        <div style={{ marginTop: 8 }}>อัพโหลด</div>
-                      </div>
-                    )}
-                  </Upload>
-                </ImgCrop>
-              </Form.Item>
-            </Col>
-          </Row>
 
           {/* Animated Form Wrapper */}
           <animated.div style={formAnimation}>
@@ -190,7 +161,7 @@ function PromotionEdit() {
               onFinish={onFinish}
               autoComplete="off"
               style={{
-                backgroundColor: "rgba(127, 107, 188, 0.3)",
+                // backgroundColor: "rgba(161, 144, 161, 0.2)",
                 padding: "20px",
                 borderRadius: "8px",
               }}
@@ -237,12 +208,12 @@ function PromotionEdit() {
                   </Row>
                 </Col>
 
-                {/* New Row for Status and Use Limit */}
+                {/* Status and Use Limit */}
                 <Col xs={24}>
                   <Row gutter={[16, 16]}>
                     <Col xs={24} sm={12}>
-                      <Form.Item label="สถานะโปรโมชั่น" name="status_id" rules={[{ required: true, message: "กรุณาเลือกสถานะโปรโมชั่น !" }]}>
-                        <Select value={status} onChange={(value) => setStatus(value)}>
+                      <Form.Item label="สถานะโปรโมชั่น" name="status_promotion_id" rules={[{ required: true, message: "กรุณาเลือกสถานะโปรโมชั่น !" }]}>
+                        <Select value={statusPromotion} onChange={(value) => setStatusPromotion(value)}>
                           <Select.Option value="active">ใช้งานได้</Select.Option>
                           <Select.Option value="expired">ปิดใช้งาน</Select.Option>
                         </Select>
@@ -250,41 +221,67 @@ function PromotionEdit() {
                     </Col>
 
                     <Col xs={24} sm={12}>
-                      <Form.Item label="จำนวนครั้งที่ใช้ได้" name="use_limit" rules={[{ required: true, message: "กรุณากรอกจำนวนครั้งที่ใช้ได้ !" }]}>
+                      <Form.Item label="จำนวนสิทธิ์" name="use_limit" rules={[{ required: true, message: "กรุณากรอกจำนวนครั้งที่ใช้ได้ !" }]}>
                         <InputNumber min={0} max={100} style={{ width: "100%" }} />
                       </Form.Item>
                     </Col>
                   </Row>
                 </Col>
 
-                {/* New Row for End Date, Distance, Status and Use Limit */}
+                {/* End Date, distance_promotion */}
                 <Col xs={24}>
                   <Row gutter={[16, 16]}>
                     <Col xs={24} sm={12}>
-                      <Form.Item label="วันหมดเขต" name="end_date" rules={[{ required: true, message: "กรุณากำหนดวันที่สิ้นสุด !" }]}>
-                        <DatePicker style={{ width: "100%" }} />
+                      <Form.Item label="ระยะทางขั้นต่ำ (กิโลเมตร)" name="distance_promotion">
+                        <InputNumber min={0} max={1000} style={{ width: "100%" }} />
                       </Form.Item>
                     </Col>
-
                     <Col xs={24} sm={12}>
-                      <Form.Item label="ระยะทางสูงสุด (กิโลเมตร)" name="distance">
-                        <InputNumber min={0} max={1000} style={{ width: "100%" }} />
+                      <Form.Item label="วันสิ้นสุดโปรโมชั่น" name="end_date" rules={[{ required: true, message: "กรุณาเลือกวันหมดเขต !" }]}>
+                        <DatePicker
+                          style={{ width: "100%" }}
+                          disabledDate={(current) => current && current < dayjs().endOf('day')}
+                        />
                       </Form.Item>
                     </Col>
                   </Row>
                 </Col>
 
-                
-
-                {/* Description */}
+                {/* Description and Image Upload */}
                 <Col xs={24}>
-                  <Form.Item label="รายละเอียดโปรโมชั่น" name="promotion_description" rules={[{ required: true, message: "กรุณากรอกรายละเอียดโปรโมชั่น !" }]}>
-                    <Input.TextArea rows={4} />
-                  </Form.Item>
+                  <Row gutter={[16, 16]}>
+                    <Col xs={24} sm={12}>
+                      <Form.Item label="รายละเอียดโปรโมชั่น" name="promotion_description" rules={[{ required: true, message: "กรุณากรอกรายละเอียดโปรโมชั่น !" }]}>
+                        <Input.TextArea rows={4} />
+                      </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={12}>
+                      <Form.Item label="รูปภาพ" name="photo">
+                        <ImgCrop rotationSlider>
+                          <Upload
+                            listType="picture-card"
+                            fileList={fileList}
+                            onChange={onChange}
+                            onPreview={onPreview}
+                            beforeUpload={() => false}
+                            maxCount={1}
+                          >
+                            {fileList.length < 1 && (
+                              <div>
+                                <FileImageOutlined style={{ fontSize: "34px" }} />
+                                <div style={{ marginTop: 8 }}>อัพโหลด</div>
+                              </div>
+                            )}
+                          </Upload>
+                        </ImgCrop>
+                      </Form.Item>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
 
-              <Row justify="center" gutter={[16, 16]}>
+              {/* Buttons */}
+              <Row justify="end" gutter={[16, 16]}>
                 <Col>
                   <Link to="/promotion">
                     <Button
