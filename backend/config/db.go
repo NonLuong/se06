@@ -102,133 +102,133 @@ func SetupDatabase() {
 	promotions := []entity.Promotion{
 		{
 			PromotionCode:        "DRIVE001",
-			PromotionName:        "ส่งฟรี ไม่มีข้อแม้!",
-			PromotionDescription: "รับบริการส่งฟรีสำหรับระยะทางไม่เกิน 10 กม.",
-			Discount:             100.0, // คิดเป็นส่วนลดเต็ม 100%
+			PromotionName:        "ส่งฟรี ไม่มีข้อแม้ !",
+			PromotionDescription: "ฟรีสำหรับลูกค้าทุกท่าน",
+			Discount:             100, // คิดเป็นส่วนลดเต็ม 100%
 			EndDate:              time.Now().Add(30 * 24 * time.Hour),
-			UseLimit:             5,
+			UseLimit:             2,
 			UseCount:             0,
-			Distance:             10.0,
+			DistancePromotion:    0.0,
 			Photo:                "promo1.jpg",
 			DiscountTypeID:       2, // Percent discount
 			StatusPromotionID:             1, // ACTIVE
 		},
 		{
 			PromotionCode:        "DRIVE002",
-			PromotionName:        "แค่ 5 กม. ก็ลดเลย!",
-			PromotionDescription: "เดินทางในระยะทาง 5 กม. ขึ้นไป ลดทันที 50 บาท",
-			Discount:             50.0,
-			EndDate:              time.Now().Add(60 * 24 * time.Hour),
-			UseLimit:             3,
+			PromotionName:        "ลด 10/10",
+			PromotionDescription: "รับส่วนลด 10% เมื่อเดินทางขั้นต่ำ 10 กม.",
+			Discount:             10, // ส่วนลด 10%
+			EndDate:              time.Now().Add(30 * 24 * time.Hour),
+			UseLimit:             5,
 			UseCount:             0,
-			Distance:             5.0,
+			DistancePromotion:    10.0,
 			Photo:                "promo2.jpg",
-			DiscountTypeID:       1, // Amount discount
+			DiscountTypeID:       2, // Percent discount
 			StatusPromotionID:             1, // ACTIVE
 		},
 		{
 			PromotionCode:        "DRIVE003",
-			PromotionName:        "ระยะทางไกลก็ลดให้!",
-			PromotionDescription: "รับส่วนลด 15% สำหรับการเดินทางในระยะทาง 20 กม. ขึ้นไป",
-			Discount:             15.0,
-			EndDate:              time.Now().Add(90 * 24 * time.Hour),
-			UseLimit:             2,
+			PromotionName:        "ลด 100 บาทต้อนรับปีใหม่",
+			PromotionDescription: "เพียงเดินทางขั้นต่ำ 10 กม. ช่วงเทศกาล",
+			Discount:             100, // ส่วนลด 100 บาท
+			EndDate:              time.Now().Add(30 * 24 * time.Hour),
+			UseLimit:             3,
 			UseCount:             0,
-			Distance:             20.0,
+			DistancePromotion:    10.0,
 			Photo:                "promo3.jpg",
-			DiscountTypeID:       2, // Percent discount
-			StatusPromotionID:              1, // ACTIVE
+			DiscountTypeID:       1, // Amount discount
+			StatusPromotionID:             1, // ACTIVE
 		},
 		{
 			PromotionCode:        "DRIVE004",
-			PromotionName:        "ยิ่งขยับ ยิ่งลด!",
-			PromotionDescription: "รับส่วนลด 30 บาทเมื่อเดินทางในระยะทางเกิน 3 กม.",
-			Discount:             30.0,
-			EndDate:              time.Now().Add(120 * 24 * time.Hour),
-			UseLimit:             1,
+			PromotionName:        "ลด 15% สุดคุ้ม",
+			PromotionDescription: "เมื่อเดินทางในเมืองขั้นต่ำ 5 กม.",
+			Discount:             15, // ส่วนลด 15%
+			EndDate:              time.Now().Add(30 * 24 * time.Hour),
+			UseLimit:             4,
 			UseCount:             0,
-			Distance:             3.0,
+			DistancePromotion:    5.0,
 			Photo:                "promo4.jpg",
-			DiscountTypeID:       1, // Amount discount
+			DiscountTypeID:       2, // Percent discount
 			StatusPromotionID:             1, // ACTIVE
 		},
 		{
 			PromotionCode:        "DRIVE005",
-			PromotionName:        "8 กม. ส่งฟรี ไม่มีเงื่อนไข",
-			PromotionDescription: "รับบริการส่งฟรีเมื่อระยะทางไม่เกิน 8 กม.",
-			Discount:             100.0, // คิดเป็นส่วนลดเต็ม 100%
-			EndDate:              time.Now().Add(45 * 24 * time.Hour),
-			UseLimit:             1,
+			PromotionName:        "ลด 200 บาทแน่นๆ",
+			PromotionDescription: "เมื่อเดินทางระยะไกล 20 กม.",
+			Discount:             200, // ส่วนลด 200 บาท
+			EndDate:              time.Now().Add(30 * 24 * time.Hour),
+			UseLimit:             2,
 			UseCount:             0,
-			Distance:             8.0,
+			DistancePromotion:    20.0,
 			Photo:                "promo5.jpg",
-			DiscountTypeID:       2, // Percent discount
+			DiscountTypeID:       1, // Amount discount
 			StatusPromotionID:             1, // ACTIVE
 		},
 		{
 			PromotionCode:        "DRIVE006",
-			PromotionName:        "15 กม. ลดให้เลย 20%",
-			PromotionDescription: "รับส่วนลด 20% สำหรับการเดินทางที่ระยะทางขั้นต่ำ 15 กม.",
-			Discount:             20.0,
-			EndDate:              time.Now().Add(180 * 24 * time.Hour),
-			UseLimit:             1,
+			PromotionName:        "ลดครึ่งนึง 50%",
+			PromotionDescription: "เมื่อเดินทางในระยะ 7 กม.",
+			Discount:             50, // ส่วนลด 50%
+			EndDate:              time.Now().Add(30 * 24 * time.Hour),
+			UseLimit:             4,
 			UseCount:             0,
-			Distance:             15.0,
+			DistancePromotion:    7.0,
 			Photo:                "promo6.jpg",
 			DiscountTypeID:       2, // Percent discount
-			StatusPromotionID:              2, // ACTIVE
+			StatusPromotionID:             1, // ACTIVE
 		},
 		{
 			PromotionCode:        "DRIVE007",
-			PromotionName:        "12 กม. ขึ้นไป ลด 100!",
-			PromotionDescription: "รับส่วนลด 100 บาทสำหรับการเดินทางที่ระยะทางเกิน 12 กม.",
-			Discount:             100.0,
-			EndDate:              time.Now().Add(60 * 24 * time.Hour),
-			UseLimit:             3,
+			PromotionName:        "เดินทางคุ้มลด 5%",
+			PromotionDescription: "แจกจ่ายเดินทางขั้นต่ำเพียง 3 กม.",
+			Discount:             5, // 
+			EndDate:              time.Now().Add(30 * 24 * time.Hour),
+			UseLimit:             7,
 			UseCount:             0,
-			Distance:             12.0,
+			DistancePromotion:    3.0,
 			Photo:                "promo7.jpg",
-			DiscountTypeID:       1, // Amount discount
-			StatusPromotionID:             2, // ACTIVE
+			DiscountTypeID:       2, // percent discount
+			StatusPromotionID:             1, // ACTIVE
 		},
 		{
 			PromotionCode:        "DRIVE008",
-			PromotionName:        "6 กม. สุดคุ้ม!",
-			PromotionDescription: "เดินทางในระยะทางไม่เกิน 6 กม. รับส่วนลด 50%",
-			Discount:             50.0,
+			PromotionName:        "ลด 25% เดือนแห่งความสุข",
+			PromotionDescription: "เดินทางครบเพียง 6 กม.",
+			Discount:             25, // ส่วนลด 25%
 			EndDate:              time.Now().Add(30 * 24 * time.Hour),
-			UseLimit:             5,
+			UseLimit:             8,
 			UseCount:             0,
-			Distance:             6.0,
+			DistancePromotion:    6.0,
 			Photo:                "promo8.jpg",
 			DiscountTypeID:       2, // Percent discount
-			StatusPromotionID:             2, // ACTIVE
+			StatusPromotionID:             1, // ACTIVE
 		},
 		{
 			PromotionCode:        "DRIVE009",
-			PromotionName:        "18 กม. ลดแรง 25%",
-			PromotionDescription: "ลด 25% สำหรับระยะทางเกิน 18 กม.",
-			Discount:             25.0,
-			EndDate:              time.Now().Add(90 * 24 * time.Hour),
-			UseLimit:             3,
+			PromotionName:        "ลด 35% สุดโหด",
+			PromotionDescription: "ภายในพื้นที่ 8 กม.",
+			Discount:             35, // ส่วนลด 30%
+			EndDate:              time.Now().Add(30 * 24 * time.Hour),
+			UseLimit:             9,
 			UseCount:             0,
-			Distance:             18.0,
+			DistancePromotion:    8.0,
 			Photo:                "promo9.jpg",
 			DiscountTypeID:       2, // Percent discount
-			StatusPromotionID:             2, // ACTIVE
+			StatusPromotionID:             1, // ACTIVE
 		},
 		{
 			PromotionCode:        "DRIVE010",
-			PromotionName:        "ระยะทางใกล้ ส่งฟรี!",
-			PromotionDescription: "ระยะทางไม่เกิน 5 กม. รับบริการส่งฟรี",
-			Discount:             100.0, // คิดเป็นส่วนลดเต็ม 100%
-			EndDate:              time.Now().Add(60 * 24 * time.Hour),
-			UseLimit:             1,
+			PromotionName:        "คุ้มกว่านี้มีอีกไหม 99",
+			PromotionDescription: "ลด 99% เหมือนส่งฟรีระยะทางขั้นต่ำ 30 กม.",
+			Discount:             99, // ส่วนลด 99%
+			EndDate:              time.Now().Add(30 * 24 * time.Hour),
+			UseLimit:             4,
 			UseCount:             0,
-			Distance:             5.0,
+			DistancePromotion:    30.0,
 			Photo:                "promo10.jpg",
 			DiscountTypeID:       2, // Percent discount
-			StatusPromotionID:              2, // ACTIVE
+			StatusPromotionID:             2, // close
 		},
 	}
 	// บันทึกข้อมูลโปรโมชั่นตัวอย่างลงในฐานข้อมูล
@@ -237,10 +237,10 @@ func SetupDatabase() {
 	}
 
 	// สร้างข้อมูลตัวอย่าง Status
-	ActiveStatus := entity.StatusPromotion{Status: "ACTIVE"}
-	ExpiredStatus := entity.StatusPromotion{Status: "EXPIRED"}
-	db.FirstOrCreate(&ActiveStatus, &entity.StatusPromotion{Status: "ACTIVE"})
-	db.FirstOrCreate(&ExpiredStatus, &entity.StatusPromotion{Status: "EXPIRED"})
+	ActiveStatus := entity.StatusPromotion{StatusPromotion: "ACTIVE"}
+	ExpiredStatus := entity.StatusPromotion{StatusPromotion: "EXPIRED"}
+	db.FirstOrCreate(&ActiveStatus, &entity.StatusPromotion{StatusPromotion: "ACTIVE"})
+	db.FirstOrCreate(&ExpiredStatus, &entity.StatusPromotion{StatusPromotion: "EXPIRED"})
 
 	// สร้างข้อมูลตัวอ ย่าง DiscountType
 	AmountDiscount := entity.DiscountType{DiscountType: "amount"}
