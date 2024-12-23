@@ -22,12 +22,12 @@
 
 .navbar .nav-links li a {
   text-decoration: none; /* ลบขีดเส้นใต้ */
-  color: #c6c3f1; /* สีของข้อความ */
+  background-color: #c6c3f1; /* สีของข้อความ */
   font-size: 16px;
 }
 
 .navbar .nav-links li a:hover {
-  color: #8c62a5; /* สีข้อความเมื่อ hover */
+  background-color: #8c62a5; /* สีข้อความเมื่อ hover */
   transition: color 0.3s;
 }
 
