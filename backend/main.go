@@ -145,10 +145,9 @@ func registerRoutes(r *gin.Engine) {
 	r.POST("/promotion", controller.CreatePromotion)
 	r.PUT("/promotion/:id", controller.UpdatePromotion)
 	r.DELETE("/promotion/:id", controller.DeletePromotion)
-
-	r.GET("/discounttype", controller.GetAllD) // ใช้ฟังก์ชัน GetAllD จาก package discounttype
-
-	r.GET("/statuses", controller.GetAllStatus) // เพิ่มเส้นทางสำหรับ Status
+	//promotion new
+	r.GET("/discounttype", controller.GetAllD)
+	r.GET("/statuspromotion", controller.GetAllStatus)
 
 	// Routes สำหรับ Room
 	r.GET("/rooms", controller.GetRooms)          // ดึงข้อมูลห้องทั้งหมด
