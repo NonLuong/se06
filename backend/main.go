@@ -128,6 +128,8 @@ func registerRoutes(r *gin.Engine) {
 	r.POST("/bookings", controller.CreateBooking)
 	r.GET("/bookings", controller.GetAllBookings)
 	r.GET("/bookings/:id", controller.GetBookingByID)
+	r.POST("/api/bookings/accept/:id", controller.AcceptBooking)  // รับงานจากคนขับ
+
 
 	// WebSocket
 	r.GET("/ws", handleWebSocketConnections)

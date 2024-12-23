@@ -58,6 +58,47 @@ func SetupDatabase() {
 	db.FirstOrCreate(&GenderMale, &entity.Gender{Gender: "Male"})
 	db.FirstOrCreate(&GenderFemale, &entity.Gender{Gender: "Female"})
 
+	// ข้อมูลตำแหน่งที่ต้องการเพิ่ม
+	locations := []entity.Location{
+		{Latitude: 14.989440874562565, Longitude: 102.09469233129263, Province: "นครราชสีมา", Place: "สถานีขนส่งผู้โดยสารจังหวัดนครราชสีมา แห่งที่2",DriverID:1},
+		{Latitude: 14.97226216361242, Longitude: 102.07854163104108, Province: "นครราชสีมา", Place: "สถานีรถไฟโคราช",DriverID:2},
+		{Latitude: 14.980969671175174, Longitude: 102.07643761780784, Province: "นครราชสีมา", Place: "เดอะมอลล์ โคราช",DriverID:3},
+		{Latitude: 14.98183787602261, Longitude: 102.09010039126157, Province: "นครราชสีมา", Place: "เทอร์มินอล 21 โคราช",DriverID:4},
+		{Latitude: 14.996281374785447, Longitude: 102.11693411904838, Province: "นครราชสีมา", Place: "เซ็นทรัล โคราช",DriverID:5},
+		{Latitude: 14.901746803513126, Longitude: 102.00956884715538, Province: "นครราชสีมา", Place: "Café Amazon สาขา มทส. ประตู 4",DriverID:6},
+		{Latitude: 14.978256144038262, Longitude: 102.09254730290546, Province: "นครราชสีมา", Place: "สถานีขนส่งนครราชสีมา"},
+		{Latitude: 14.974824485355242, Longitude: 102.0981385474978, Province: "นครราชสีมา", Place: "Café Class ใกล้ลานย่าโม",},
+		{Latitude: 14.986847325609906, Longitude: 102.09175265877519, Province: "นครราชสีมา", Place: "โรงเรียนอัสสัมชัญนครราชสีมา"},
+		{Latitude: 13.745983305017283, Longitude: 100.5343802441482, Province: "กรุงเทพมหานคร", Place: "สยามพารากอน"},
+		{Latitude: 13.98919288476311, Longitude: 100.61774675399516, Province: "กรุงเทพมหานคร", Place: "ฟิวเจอร์พาร์ค รังสิต แอน สเปลล์"},
+		{Latitude: 13.813782036370695, Longitude: 100.54976354819318, Province: "กรุงเทพมหานคร", Place: "หน้าสถานีขนส่งหมอชิต 2"},
+		{Latitude: 13.816038542388675, Longitude: 100.7251641441578, Province: "กรุงเทพมหานคร", Place: "ตลาดจตุจักร 2 (เมืองมีน)"},
+	}
+
+	// เพิ่มข้อมูล Location ลงในฐานข้อมูล
+	for _, location := range locations {
+		db.FirstOrCreate(&location, entity.Location{Latitude: location.Latitude, Longitude: location.Longitude, Place: location.Place})
+	}
+
+
+	statuses := []entity.Status{
+		{
+			StatusName: "Active",//ใช้บ่งบอกว่าสถานะของ Drivers
+			StatusType: "Operational",//พร้อมใช้งาน
+		},
+		{
+			StatusName: "Inactive",
+			StatusType: "Non-Operational",
+		},
+	}
+	
+	for _, status := range statuses {
+		db.Create(&status)
+	}
+	
+	
+
+
 	promotions := []entity.Promotion{
 		{
 			PromotionCode:        "DRIVE001",
@@ -296,6 +337,8 @@ func SetupDatabase() {
 			GenderID:                    GenderMale.ID,
 			EmployeeID:                  2,
 			VehicleID:					 1,
+			LocationID: 6,
+			StatusID: 1,
 		},
 		{
 			Firstname:                   "Somsak",
@@ -312,6 +355,8 @@ func SetupDatabase() {
 			GenderID:                    GenderMale.ID,
 			EmployeeID:                  2,
 			VehicleID:					 2,
+			LocationID: 1,
+			StatusID: 1,
 		},
 		{
 			Firstname:                   "Prasit",
@@ -328,6 +373,8 @@ func SetupDatabase() {
 			GenderID:                    GenderMale.ID,
 			EmployeeID:                  3,
 			VehicleID:					 6,
+			LocationID: 2,
+			StatusID: 1,
 		},
 		{
 			Firstname:                   "Thannam",
@@ -344,6 +391,8 @@ func SetupDatabase() {
 			GenderID:                    GenderFemale.ID,
 			EmployeeID:                  3,
 			VehicleID:					 4,
+			LocationID: 3,
+			StatusID: 2,
 		},
 		{
 			Firstname:                   "Anan",
@@ -360,6 +409,8 @@ func SetupDatabase() {
 			GenderID:                    GenderFemale.ID,
 			EmployeeID:                  2,
 			VehicleID:					 5,
+			LocationID: 4,
+			StatusID: 2,
 		},
 		{
 			Firstname:                   "Supa",
@@ -376,6 +427,8 @@ func SetupDatabase() {
 			GenderID:                    GenderFemale.ID,
 			EmployeeID:                  2,
 			VehicleID:					 3,
+			LocationID: 5,
+			StatusID: 1,
 		},
 	}
 

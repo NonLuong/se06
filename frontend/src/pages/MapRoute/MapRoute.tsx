@@ -14,7 +14,7 @@ const vehicles = [
 
 const MapRoute: React.FC = () => {
   const location = useLocation();
-  const { pickupLocation, startLocationId, destinationLocation, destinationId } = location.state || {};
+  const { pickupLocation, startLocationId, destinationLocation, destinationId ,} = location.state || {};
   const navigate = useNavigate(); 
   const [directions, setDirections] = React.useState<any>(null);
   const [distance, setDistance] = React.useState<number | null>(null); // ระยะทางเป็นตัวเลข
@@ -91,6 +91,7 @@ const MapRoute: React.FC = () => {
       start_location_id: startLocationId, // ID ของตำแหน่งเริ่มต้น
       destination_id: destinationId, // ID ของจุดหมายปลายทาง
       passenger_id: 1, // ตัวอย่าง Passenger ID (ต้องดึงจาก context หรือ state ในการทำงานจริง)
+     
     };
   
     try {
@@ -100,9 +101,22 @@ const MapRoute: React.FC = () => {
       if (result.success) {
         alert("การจองสำเร็จ!");
         console.log("Booking created:", result.data); // แสดงข้อมูลการจองที่สร้างใน console
-  
+        console.log("Response from backend:", result);
+        console.log("result.data:", result.data);
+
+
+        const bookingId = result.data.data.ID;  // ดึง ID ของการจองจาก result.data
+        console.log("bookingid:", bookingId);
+      
         // นำทางไปยังหน้าการจองเสร็จสมบูรณ์
-        navigate('/paid', { state: { total_price: bookingData.total_price } });
+        navigate('/paid', { 
+          state: { 
+            total_price: bookingData.total_price, 
+            bookingId
+          }
+        });
+        console.log("total_price", bookingData.total_price);
+        console.log("bookingid :", bookingId);
       } else {
         alert(`เกิดข้อผิดพลาด: ${result.message}`);
       }
@@ -115,7 +129,7 @@ const MapRoute: React.FC = () => {
   return (
     <div className="MapRoute">
       <LoadScript
-        googleMapsApiKey="api map"
+        googleMapsApiKey="api key"
         onLoad={handleApiLoaded}
       >
         <GoogleMap
@@ -140,33 +154,35 @@ const MapRoute: React.FC = () => {
       </LoadScript>
 
     
-      <div className="vehicle-options">
+      <div className="ticket-container">
   {vehicles.map((vehicle, index) => {
     const fareForVehicle =
       distance !== null
         ? vehicle.baseFare + vehicle.perKm * distance
         : null;
 
-      return (
-        <div
-          key={vehicle.id}
-          className={`vehicle-item ${index % 2 === 0 ? 'even' : 'odd'} ${
-            selectedVehicle === vehicle.id ? 'selected' : ''
-          }`}
-          onClick={() => handleSelectVehicle(vehicle.id)}
-        >
-          <div className="vehicle-icon">{vehicle.icon}</div>
-          <div className="vehicle-info">
-            <h3>{vehicle.name}</h3>
-            <p>x{vehicle.capacity}</p>
-
-            {distance !== null && <p>ระยะทาง: {distance.toFixed(2)} Km</p>}
-            {fareForVehicle !== null && <p>ค่าโดยสาร: {fareForVehicle.toFixed(2)} บาท</p>}
+    return (
+      <div className={`ticket ${selectedVehicle === vehicle.id ? 'selected' : ''}`}>
+        <div className="dashed-border">
+          <div
+            className={`vehicle-item ${index % 2 === 0 ? 'even' : 'odd'}`}
+            onClick={() => handleSelectVehicle(vehicle.id)}
+          >
+            <div className="vehicle-icon">{vehicle.icon}</div>
+            <div className="vehicle-info">
+              <h3>{vehicle.name}</h3>
+              <p>x{vehicle.capacity}</p>
+              {distance !== null && <p>distance: {distance.toFixed(2)} Km</p>}
+              {fareForVehicle !== null && (
+                <p>fare: {fareForVehicle.toFixed(2)} Baht</p>
+              )}
+            </div>
           </div>
         </div>
-      );
-    })}
-  </div>
+      </div>
+    );
+  })}
+</div>
 
   {/* เพิ่มปุ่มจอง Cabana */}
   <div className="booking-button-container">
@@ -178,7 +194,11 @@ const MapRoute: React.FC = () => {
       Booking Cabana
     </button>
   </div>
+
 </div>
+
+
+
 
     
   

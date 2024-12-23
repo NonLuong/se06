@@ -1,25 +1,24 @@
 /* สำหรับ container ของรายการสถานที่ */
-.list-place {
-    position: absolute;
-    bottom: 70px;
-    left: 0;
-    right: 0;
-    background-color: #fff;
+.mapcomponent {
+  background-color: #D9D7EF; /* ตัวอย่างสีฟ้าอ่อน */
+  height: 100vh; /* กำหนดให้เต็มความสูงของหน้าจอ */
+  width: 100%; /* กำหนดให้เต็มความกว้างของหน้าจอ */
+}
+
+.mapcomponent .list-place {
+    background-color: #D9D7EF;
     z-index: 1001;
-    top: 120%;
   }
   
   /* สำหรับรายการของสถานที่ */
-  .place-list {
+  .mapcomponent .place-list {
     list-style-type: none;
-    padding: 0;
-    margin: 0;
     overflow-y: auto;
-    max-height: 200px;
-  }
+    
+}
   
   /* สำหรับแต่ละรายการสถานที่ */
-  .place-item {
+  .mapcomponent .place-item {
     padding: 10px;
     border-bottom: 1px solid #ddd;
     cursor: pointer;
@@ -37,7 +36,7 @@
 /* สไตล์ของกล่องปุ่ม */
 .pickup-button-container {
     width: 100%;
-    background-color: #fff;
+    background-color: #D9D7EF;
     padding: 10px;
     position: fixed; /* ใช้ fixed เพื่อให้ปุ่มอยู่คงที่ที่ด้านล่าง */
     bottom: 10px; /* ตั้งค่าให้ปุ่มอยู่ห่างจากด้านล่าง */
@@ -49,14 +48,15 @@
 /* ปุ่มเลือกจุดรับ */
 .pickup-button {
     padding: 10px;
-    background-color: #4CAF50;
+    background-color: #7F6ACB;
     color: #fff;
     border: none;
     border-radius: 5px;
     width: 100%;
     cursor: pointer;
+    font-weight: bold; /* ทำให้ข้อความตัวหนา */
 }
 
 .pickup-button:hover {
-    background-color: #45a049; /* สีเมื่อ hover */
+    background-color: #a696e0; /* สีเมื่อ hover */
 }

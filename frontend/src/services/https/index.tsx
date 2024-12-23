@@ -197,7 +197,24 @@ export const getBookingById = async (bookingId: string): Promise<any> => {
   }
 };
 
+// ฟังก์ชันสำหรับการรับงานจากคนขับ
+export const acceptBooking = async (bookingId:string) => {
+  try {
+    const response = await fetch(`/api/bookings/accept/${bookingId}`, {
+      method: 'POST',
+    });
 
+    const data = await response.json();
+    if (data.success) {
+      return data;  // คืนค่าผลลัพธ์จากการรับงาน
+    } else {
+      throw new Error(`Failed to accept booking: ${data.message}`);
+    }
+  } catch (error) {
+    console.error('Error accepting booking:', error);
+    throw error;
+  }
+};
 export 
 { sendMessageToBackend };
 {fetchMessagesFromBackend};

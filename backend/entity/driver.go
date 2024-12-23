@@ -24,7 +24,7 @@ type Driver struct {
 	GenderID         uint       `json:"gender_id"`
 	Gender           Gender    `gorm:"foreignKey:GenderID" json:"gender"` 
 
-	LocationID       *uint       `json:"location_id"`
+	LocationID       uint       `json:"location_id"`
 	Location         Location  `gorm:"foreignKey:LocationID" json:"location"` 
 	
 	VehicleID        uint       `json:"vehicle_id"`
@@ -33,7 +33,7 @@ type Driver struct {
 	EmployeeID       uint
     Employee         Employee 	`gorm:"foreignKey:EmployeeID"`
 
-	StatusID         *uint       `json:"status_id"`
+	StatusID         uint       `json:"status_id"`
 	Status           Status    `gorm:"foreignKey:StatusID" json:"status"` 
 
 	Bookings         []Booking `gorm:"foreignKey:DriverID" json:"bookings"` 

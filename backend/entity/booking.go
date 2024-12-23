@@ -14,10 +14,10 @@ type Booking struct {
     BookingStatus string `json:"booking_status"`
     Vehicle     string  `json:"vehicle"`
 
-    PassengerID *uint    `json:"passenger_id"`
+    PassengerID uint    `json:"passenger_id"`
     Passenger   Passenger `gorm:"foreignKey:PassengerID" json:"passenger"` // ความสัมพันธ์ belongsTo
 
-    DriverID    *uint     `json:"driver_id"`
+    DriverID    uint     `json:"driver_id"`
     Driver      Driver    `gorm:"foreignKey:DriverID" json:"driver"` // ความสัมพันธ์ belongsTo
 
     Messages    []Message `gorm:"foreignKey:BookingID" json:"messages"` // ความสัมพันธ์ hasMany

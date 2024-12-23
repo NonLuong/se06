@@ -14,10 +14,7 @@ const containerStyle = {
 const searchContainerStyle = {
   width: '100%',
   padding: '10px',
-  marginTop: '10px',
-  backgroundColor: '#fff',
-  position: 'absolute',
-  bottom: '10px',
+  backgroundColor: '#D9D7EF',
   left: '0',
   zIndex: '1000',
   top: '80%',
@@ -136,8 +133,8 @@ const handleDestinationSubmit = async () => {
   if (!location) return <div>กำลังโหลดแผนที่...</div>;
 
   return (
-    <div style={{ position: 'relative' }}>
-      <LoadScript googleMapsApiKey="api_map" libraries={['places']}>
+    <div className = "destination"style={{ position: 'relative' }}>
+      <LoadScript googleMapsApiKey="api key" libraries={['places']}>
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={location}
@@ -154,7 +151,7 @@ const handleDestinationSubmit = async () => {
       </LoadScript>
 
       {/* ช่องค้นหาสถานที่ */}
-      <div style={{ ...searchContainerStyle, marginTop: '80px' }}>
+      <div style={{ ...searchContainerStyle}}>
         <input
           type="text"
           value={searchText}
@@ -191,7 +188,7 @@ const handleDestinationSubmit = async () => {
           className="pickup-button"
           onClick={handleDestinationSubmit}
         >
-          เลือกจุดหมายปลายทาง
+          Drop off point
         </button>
       </div>
     </div>
