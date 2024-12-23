@@ -31,7 +31,7 @@ func GetPromotion(c *gin.Context) {
 
 	db := config.DB()
 
-	// ค้นหาโปรโมชั่นโดย ID พร้อมข้อมูล DiscountType และ Status
+	// ค้นหาโปรโมชั่นโดย ID พร้อมข้อมูล DiscountType และ StatusPromotion
 	results := db.Preload("DiscountType").Preload("StatusPromotion").First(&promotion, ID)
 
 	if results.Error != nil {
