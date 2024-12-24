@@ -74,6 +74,7 @@ function TrainerEdit() {
       BirthDay: values.birthday?.toISOString(),
       Age: values.age,
       GenderID: values.gender_id,
+      rolesId: values.roleId,
       message: "",
     };
 
@@ -188,7 +189,7 @@ function TrainerEdit() {
           <Row justify="end">
             <Col>
               <Space>
-                <Button onClick={() => navigate("/trainers")}>ยกเลิก</Button>
+                <Button onClick={() => navigate("/trainer")}>ยกเลิก</Button>
                 <Button type="primary" htmlType="submit" icon={<PlusOutlined />}>
                   บันทึก
                 </Button>

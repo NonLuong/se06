@@ -27,4 +27,7 @@ type Trainers struct {
 
    Gender    *Gender  `gorm:"foreignKey: gender_id" json:"gender"`
 
+   RoleID   uint   `gorm:"not null"`
+   Role     Roles  `gorm:"foreignKey:RoleID"`
+
 }

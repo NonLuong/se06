@@ -447,6 +447,104 @@ func SetupDatabase() {
 		db.FirstOrCreate(d, entity.Driver{DriverLicensenumber: d.DriverLicensenumber})
 	}
 
+	trainers := []*entity.Trainers{
+		{
+			FirstName: "Nontakarn",
+			LastName: "saisok",
+			Email: "nontakarn@gmail.com",
+			Age: 21,
+			BirthDay: time.Date(2003, time.December, 11, 17, 0, 0, 0, time.UTC),
+			GenderID: 1,
+			RoleID: 3,
+		},
+		{
+			FirstName: "Somsak",
+			LastName: "meemak",
+			Email: "Somsak@gmail.com",
+			Age: 52,
+			BirthDay: time.Date(1983, time.September, 14, 17, 0, 0, 0, time.UTC),
+			GenderID: 1,
+			RoleID: 3,
+		},
+		{
+			FirstName: "Chutima",
+			LastName: "Ploysai",
+			Email: "chutima@gmail.com",
+			Age: 31,
+			BirthDay: time.Date(1992, time.March, 11, 17, 0, 0, 0, time.UTC),
+			GenderID: 2,
+			RoleID: 3,
+		},
+		{
+			FirstName: "Kanokwan",
+			LastName: "Jantima",
+			Email: "kanokwan@gmail.com",
+			Age: 26,
+			BirthDay: time.Date(1997, time.November, 29, 17, 0, 0, 0, time.UTC),
+			GenderID: 2,
+			RoleID: 3,
+		},
+		{
+			FirstName: "Jirawat",
+			LastName: "Somchai",
+			Email: "jirawat@gmail.com",
+			Age: 38,
+			BirthDay: time.Date(1985, time.May, 9, 17, 0, 0, 0, time.UTC),
+			GenderID: 1,
+			RoleID: 3,
+		},
+		{
+			FirstName: "Sutida",
+			LastName: "Wongchai",
+			Email: "sutida@gmail.com",
+			Age: 33,
+			BirthDay: time.Date(1990, time.February, 16, 17, 0, 0, 0, time.UTC),
+			GenderID: 2,
+			RoleID: 3,
+		},
+		{
+			FirstName: "Natthapong",
+			LastName: "Tangsiri",
+			Email: "natthapong@gmail.com",
+			Age: 35,
+			BirthDay: time.Date(1988, time.August, 22, 17, 0, 0, 0, time.UTC),
+			GenderID: 1,
+			RoleID: 3,
+		},
+		{
+			FirstName: "Waraporn",
+			LastName: "Chanthai",
+			Email: "waraporn@gmail.com",
+			Age: 30,
+			BirthDay: time.Date(1993, time.September, 6, 17, 0, 0, 0, time.UTC),
+			GenderID: 2,
+			RoleID: 3,
+		},
+		{
+			FirstName: "Prasit",
+			LastName: "Boonchai",
+			Email: "prasit@gmail.com",
+			Age: 40,
+			BirthDay: time.Date(1983, time.June, 13, 17, 0, 0, 0, time.UTC),
+			GenderID: 1,
+			RoleID: 3,
+		},
+		{
+			FirstName: "Siriporn",
+			LastName: "Wansuk",
+			Email: "siriporn@gmail.com",
+			Age: 34,
+			BirthDay: time.Date(1989, time.December, 4, 17, 0, 0, 0, time.UTC),
+			GenderID: 2,
+			RoleID: 3,
+		},
+	}
+	
+	// Add trainers to the database
+	for _, e := range trainers {
+		db.FirstOrCreate(e, entity.Trainers{Email: e.Email})
+	}
+
 	// สร้าง Gender
 	VehicleType1 := entity.VehicleType{VehicleType: "Motorcycle"}
 	VehicleType2 := entity.VehicleType{VehicleType: "Car"}

@@ -14,11 +14,29 @@ function Trainbook() {
 
   // ฟังก์ชันดึงข้อมูลห้อง
   const fetchRoomDetails = async () => {
+    if (!id) {
+      messageApi.error("ไม่พบ ID ของห้องใน URL");
+      return;
+    }
+
     try {
       setLoading(true);
       const res = await GetRoomById(Number(id));
-      if (res.status === 200) {
-        setRoom(res.data);
+      console.log("Room Details:", res.data); // แสดงข้อมูลใน Console
+      if (res.status === 200 && res.data) {
+        const roomData = res.data.data; // เข้าถึงข้อมูลภายใน data
+        setRoom({
+          RoomName: roomData.room_name || "ไม่มีข้อมูล",
+          Capacity: roomData.capacity || 0,
+          CurrentBookings: roomData.current_bookings || 0,
+          Trainer: roomData.trainer
+            ? {
+                FirstName: roomData.trainer.first_name || "ไม่ระบุชื่อ",
+                LastName: roomData.trainer.last_name || "ไม่ระบุนามสกุล",
+              }
+            : { FirstName: "ไม่มีข้อมูล", LastName: "" },
+          Detail: roomData.detail || "ไม่มีรายละเอียด",
+        });
       } else {
         messageApi.error("ไม่พบข้อมูลห้อง");
       }
@@ -29,6 +47,10 @@ function Trainbook() {
       setLoading(false); // ปิดสถานะ Loading
     }
   };
+
+  useEffect(() => {
+    fetchRoomDetails();
+  }, [id]);
 
   // ฟังก์ชันสำหรับการจองห้อง
   const handleBooking = async () => {
@@ -65,10 +87,6 @@ function Trainbook() {
     }
   };
 
-  useEffect(() => {
-    fetchRoomDetails();
-  }, [id]);
-
   return (
     <div style={{ padding: "20px" }}>
       {contextHolder}
@@ -78,20 +96,19 @@ function Trainbook() {
         ) : room ? (
           <div>
             <p>
-              <strong>ชื่อห้อง:</strong> {room.room_name}
+              <strong>ชื่อห้อง:</strong> {room.RoomName}
             </p>
             <p>
-              <strong>ความจุ:</strong> {room.current_bookings}/{room.capacity}
+              <strong>ความจุ:</strong> {room.CurrentBookings}/{room.Capacity}
             </p>
             <p>
               <strong>เทรนเนอร์:</strong>{" "}
-              {room.trainer
-                ? `${room.trainer.first_name} ${room.trainer.last_name}`
+              {room.Trainer
+                ? `${room.Trainer.FirstName} ${room.Trainer.LastName}`
                 : "ไม่มีเทรนเนอร์"}
             </p>
             <p>
-              <strong>รายละเอียด:</strong>{" "}
-              {room.detail || "ไม่มีรายละเอียด"}
+              <strong>รายละเอียด:</strong> {room.Detail}
             </p>
           </div>
         ) : (
