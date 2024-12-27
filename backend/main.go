@@ -222,16 +222,20 @@ func registerRoutes(r *gin.Engine) {
 // CORSMiddleware จัดการ Cross-Origin Resource Sharing (CORS)
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		// อนุญาตเฉพาะ Origin ที่ต้องการ
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE, PATCH")
 
+		// จัดการ Preflight Request
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return
 		}
 
+		// ไปยัง Middleware ถัดไป
 		c.Next()
 	}
 }
+

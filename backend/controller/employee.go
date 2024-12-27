@@ -28,7 +28,6 @@ func CreateEmployee(c *gin.Context) {
 
 	// Bind JSON to the input struct
 	if err := c.ShouldBindJSON(&input); err != nil {
-		fmt.Println("Error binding JSON:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -38,7 +37,6 @@ func CreateEmployee(c *gin.Context) {
 	// Check if email already exists
 	var existingEmployee entity.Employee
 	if err := db.Where("email = ?", input.Email).First(&existingEmployee).Error; err == nil {
-		fmt.Println("Email already exists:", input.Email)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Email already exists"})
 		return
 	}
@@ -46,14 +44,12 @@ func CreateEmployee(c *gin.Context) {
 	// Parse date fields
 	dateOfBirth, err := time.Parse("2006-01-02", input.DateOfBirth)
 	if err != nil {
-		fmt.Println("Invalid date_of_birth format:", input.DateOfBirth)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date_of_birth format"})
 		return
 	}
 
 	startDate, err := time.Parse("2006-01-02", input.StartDate)
 	if err != nil {
-		fmt.Println("Invalid start_date format:", input.StartDate)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid start_date format"})
 		return
 	}
@@ -61,22 +57,20 @@ func CreateEmployee(c *gin.Context) {
 	// Hash password
 	hashedPassword, hashErr := config.HashPassword(input.Password)
 	if hashErr != nil {
-		fmt.Println("Error hashing password:", hashErr)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error hashing password"})
 		return
 	}
 
-	// Fetch the Position, Gender, and Roles by their IDs
+	// Fetch the Position by ID
 	var position entity.Position
 	if err := db.First(&position, input.PositionID).Error; err != nil {
-		fmt.Println("Invalid PositionID:", input.PositionID)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid PositionID"})
 		return
 	}
 
+	// Fetch the Gender by ID
 	var gender entity.Gender
 	if err := db.First(&gender, input.GenderID).Error; err != nil {
-		fmt.Println("Invalid GenderID:", input.GenderID)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid GenderID"})
 		return
 	}
@@ -89,7 +83,6 @@ func CreateEmployee(c *gin.Context) {
 	case 1, 3: // Owner or Admin
 		rolesID = 4
 	default:
-		fmt.Println("Invalid PositionID:", input.PositionID)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid PositionID"})
 		return
 	}
@@ -112,12 +105,9 @@ func CreateEmployee(c *gin.Context) {
 
 	// Save to database
 	if err := db.Create(&employee).Error; err != nil {
-		fmt.Println("Error creating employee:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	fmt.Println("Employee created successfully:", employee)
 
 	// Respond with the created employee
 	c.JSON(http.StatusCreated, gin.H{
@@ -125,6 +115,7 @@ func CreateEmployee(c *gin.Context) {
 		"data":    employee,
 	})
 }
+
 
 // GetEmployee handles fetching a single employee by ID
 func GetEmployee(c *gin.Context) {
