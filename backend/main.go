@@ -21,50 +21,33 @@ var upgrader = websocket.Upgrader{
 var clients = make(map[string]map[*websocket.Conn]bool) // map[roomID] -> set of connections
 var broadcast = make(chan controller.Message)           // ใช้ Message จาก controller
 
-// WebSocket Handler
+// WebSocket Handler สำหรับรับการเชื่อมต่อจากคนขับ
 func handleWebSocketConnections(c *gin.Context) {
-	// Upgrade HTTP เป็น WebSocket
-	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
-	if err != nil {
-		log.Println("Error upgrading to WebSocket:", err)
-		return
-	}
-	defer conn.Close()
+    conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+    if err != nil {
+        log.Println("Error upgrading to WebSocket:", err)
+        return
+    }
+    defer conn.Close()  
 
-	// ดึง room จาก Query Parameter (bookingID)
-	room := c.DefaultQuery("room", "")
-	if room == "" {
-		log.Println("Room (bookingID) is required")
-		log.Printf("Client connected to room: %s", room)
+    room := c.DefaultQuery("room", "")
+    if room == "" {
+        log.Println("Room (bookingID) is required")
+        return
+    }
 
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Room (bookingID) is required"})
-		return
-	}
+    log.Printf("WebSocket connected for room: %s", room)
 
-	// ตรวจสอบว่ามี room หรือยัง
-	if clients[room] == nil {
-		clients[room] = make(map[*websocket.Conn]bool)
-	}
-	clients[room][conn] = true
-	log.Printf("Client connected to room: %s, Total clients in room: %d", room, len(clients[room]))
+    for {
+        _, message, err := conn.ReadMessage()
+        if err != nil {
+            log.Printf("Error reading from WebSocket room %s: %v", room, err)
+            break
+        }
+        log.Printf("Message from room %s: %s", room, message)
+    }
 
-	defer func() {
-		log.Printf("Client disconnected from room: %s, Client: %v", room, conn.RemoteAddr())
-		delete(clients[room], conn)
-	}()
-
-	// รับข้อความจาก Client
-	for {
-		var msg controller.Message
-		err := conn.ReadJSON(&msg)
-		if err != nil {
-			log.Printf("Error reading JSON from room %s: %v", room, err)
-			break
-		}
-		log.Printf("Message received in room %s: %+v", room, msg)
-		msg.Room = room // กำหนด room ให้แน่ใจว่าอยู่ในห้องที่ถูกต้อง
-		broadcast <- msg
-	}
+    log.Printf("WebSocket disconnected for room: %s", room)
 }
 
 // ฟังก์ชันสำหรับส่งข้อความไปยังห้องที่เชื่อมต่ออยู่
@@ -88,9 +71,11 @@ func handleMessages() {
 				delete(clients[room], conn)
 			}
 		}
-		log.Printf("Message broadcasted to room %s: %+v", room, msg)
+		//log.Printf("Message broadcasted to room %s: %+v", room, msg)
 	}
 }
+
+
 
 func main() {
 	const PORT = "8080" // ระบุพอร์ตที่ต้องการรัน
@@ -128,6 +113,8 @@ func registerRoutes(r *gin.Engine) {
 	r.POST("/bookings", controller.CreateBooking)
 	r.GET("/bookings", controller.GetAllBookings)
 	r.GET("/bookings/:id", controller.GetBookingByID)
+	r.POST("/api/bookings/accept/:id", controller.AcceptBooking)  // รับงานจากคนขับ
+
 
 	// WebSocket
 	r.GET("/ws", handleWebSocketConnections)

@@ -13,14 +13,14 @@ const containerStyle = {
 const searchContainerStyle = {
   width: '100%',
   padding: '10px',
-  marginTop: '10px',
-  backgroundColor: '#fff',
-  position: 'absolute',
-  bottom: '10px',
+  //marginTop: '10px',
+  backgroundColor: '#D9D7EF',
   left: '0',
   zIndex: '1000',
-  top: '80%',
+  //top: '80%',
 };
+
+
 
 const MapComponent: React.FC = () => {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null); // ตำแหน่งปัจจุบัน
@@ -29,6 +29,7 @@ const MapComponent: React.FC = () => {
   const [nearbyPlaces, setNearbyPlaces] = useState<any[]>([]); // รายการสถานที่ใกล้เคียง
   const [map, setMap] = useState<any>(null); // ใช้เก็บ map instance เพื่อใช้ในการเลื่อนแผนที่
   const navigate = useNavigate(); // ใช้ navigate สำหรับเปลี่ยนหน้า
+  
   
   // ดึงตำแหน่งของผู้ใช้
   useEffect(() => {
@@ -50,6 +51,9 @@ const MapComponent: React.FC = () => {
           };
           setLocation(defaultLocation);
           fetchNearbyPlaces(defaultLocation); // เรียกค้นหาสถานที่ใกล้เคียง
+        },
+        {
+          timeout: 10000, // กำหนด Timeout เป็น 10 วินาที
         }
       );
     } else {
@@ -174,7 +178,7 @@ const MapComponent: React.FC = () => {
 
   return (
     <div className="mapcomponent"style={{ position: 'relative' }}>
-      <LoadScript googleMapsApiKey="api map" libraries={['places']}>
+      <LoadScript googleMapsApiKey="AIzaSyBCporibkdPqd7yC4nJEWMZI2toIlY23jM" libraries={['places']}>
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={location}
@@ -194,7 +198,7 @@ const MapComponent: React.FC = () => {
       </LoadScript>
 
       {/* ช่องค้นหาสถานที่ */}
-      <div style={{ ...searchContainerStyle, marginTop: '80px' }}>
+      <div style={{ ...searchContainerStyle}}>
         <input
           type="text"
           value={searchText}
@@ -204,34 +208,36 @@ const MapComponent: React.FC = () => {
             width: '100%',
             padding: '10px',
             borderRadius: '5px',
-            border: '1px solid #ccc',
+            border: '1px solid #D9D7EF',
             boxSizing: 'border-box',
           }}
         />
       </div>
 
       {/* แสดงรายการสถานที่ใกล้เคียง */}
-      <div className="list-place">
-        <ul className="place-list">
-          {nearbyPlaces.length > 0 ? (
-            nearbyPlaces.map((place, index) => (
-              <li key={index} className="place-item">
-                <span>{place.name}</span>
-              </li>
-            ))
-          ) : (
-            <li className="place-item">ไม่พบสถานที่ใกล้เคียง</li>
-          )}
-        </ul>
-      </div>
-
+      
+     
+        <div className="list-place">
+          <ul className="place-list">
+            {nearbyPlaces.length > 0 ? (
+              nearbyPlaces.map((place, index) => (
+                <li key={index} className="place-item">
+                  <span>{place.name}</span>
+                </li>
+              ))
+            ) : (
+              <li className="place-item">ไม่พบสถานที่ใกล้เคียง</li>
+            )}
+          </ul>
+        </div>
+     
       {/* ปุ่มเลือกจุดรับ */}
       <div className="pickup-button-container">
         <button
           className="pickup-button"
           onClick={handlePickUpSubmit}
         >
-          เลือกจุดรับ
+          Pick-up point
         </button>
       </div>
     </div>

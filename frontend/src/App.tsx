@@ -36,6 +36,7 @@ import Employee from "./pages/Employee/Employee";
 import EditEmployee from "./pages/Employee/EditEmployee";
 import AddEmployee from "./pages/Employee/AddEmployee";
 import Vehicle from "./pages/Vehicle/Vehicle";
+import DriverBooking from "./pages/DriverBooking/DriverBooking";
 
 
 const App: React.FC = () => {
@@ -60,6 +61,8 @@ const App: React.FC = () => {
         <Route path="/RideHistory" element={<RideHistory />} /> {/* เส้นทางสำหรับ CompletedBooking */}
         <Route path="/PassengerChat" element={<PassengerChat />} /> {/* เส้นทางสำหรับ CompletedBooking */}
         <Route path="/DriverChat" element={<DriverChat />} /> {/* เส้นทางสำหรับ CompletedBooking */}
+        <Route path="/DriverBooking" element={<DriverBooking />} /> {/* เส้นทางสำหรับ CompletedBooking */}
+
 
 
        {/*ต้อง* promotion */}

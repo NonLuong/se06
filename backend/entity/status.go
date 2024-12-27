@@ -4,7 +4,6 @@ import "gorm.io/gorm"
 
 type Status struct {
 	gorm.Model   
-    StatusID   int       `gorm:"primaryKey" json:"status_id"`
     StatusName string    `json:"status_name"`
     StatusType string    `json:"status_type"`
 	
