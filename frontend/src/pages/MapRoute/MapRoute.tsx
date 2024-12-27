@@ -129,7 +129,7 @@ const MapRoute: React.FC = () => {
   return (
     <div className="MapRoute">
       <LoadScript
-        googleMapsApiKey="AIzaSyBCporibkdPqd7yC4nJEWMZI2toIlY23jM"
+        googleMapsApiKey="api key"
         onLoad={handleApiLoaded}
       >
         <GoogleMap
