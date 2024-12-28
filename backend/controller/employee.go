@@ -7,8 +7,12 @@ import (
 
 	"project-se/config"
 	"project-se/entity"
+
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
+
+var validate = validator.New()
 
 // CreateEmployee handles creating a new employee
 func CreateEmployee(c *gin.Context) {
@@ -28,7 +32,13 @@ func CreateEmployee(c *gin.Context) {
 
 	// Bind JSON to the input struct
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data: " + err.Error()})
+		return
+	}
+
+	// Validate input using go-playground/validator
+	if err := validate.Struct(input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Validation error: " + err.Error()})
 		return
 	}
 
@@ -38,6 +48,9 @@ func CreateEmployee(c *gin.Context) {
 	var existingEmployee entity.Employee
 	if err := db.Where("email = ?", input.Email).First(&existingEmployee).Error; err == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Email already exists"})
+		return
+	} else if err != nil && err.Error() != "record not found" {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error: " + err.Error()})
 		return
 	}
 
@@ -105,7 +118,7 @@ func CreateEmployee(c *gin.Context) {
 
 	// Save to database
 	if err := db.Create(&employee).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error saving employee: " + err.Error()})
 		return
 	}
 
@@ -115,6 +128,7 @@ func CreateEmployee(c *gin.Context) {
 		"data":    employee,
 	})
 }
+
 
 
 // GetEmployee handles fetching a single employee by ID

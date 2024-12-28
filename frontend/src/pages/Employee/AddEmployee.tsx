@@ -21,7 +21,7 @@ import { Position } from "../../interfaces/IPosition";
 import { Gender } from "../../interfaces/IGender";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useNavigate } from "react-router-dom";
-import { EmployeeInterface } from "../../interfaces/IEmployee";
+//import { EmployeeInterface } from "../../interfaces/IEmployee";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -88,23 +88,22 @@ const AddEmployee: React.FC = () => {
       };
   
       const response = await createEmployee(employeeData);
-      console.log("Employee Data to send:", employeeData);
-      if (response.status === 201) {
-        messageApi.open({
-          type: "success",
-          content: "บันทึกข้อมูลพนักงานสำเร็จ!",
-        });
-        setTimeout(() => navigate("/employees"), 2000);
-      } else {
-        throw new Error(response.message || "เกิดข้อผิดพลาด!");
-      }
+  
+      messageApi.open({
+        type: "success",
+        content: "บันทึกข้อมูลพนักงานสำเร็จ!",
+      });
+      setTimeout(() => navigate("/employees"), 2000);
     } catch (error: any) {
+      console.error("Error in handleFinish:", error.message || error);
+  
       messageApi.open({
         type: "error",
-        content: `บันทึกข้อมูลล้มเหลว: ${error.message}`,
+        content: `บันทึกข้อมูลล้มเหลว: ${error.message || "เกิดข้อผิดพลาด!"}`,
       });
     }
-  };  
+  };
+  
   
   return (
     <div style={{ display: "flex", minHeight: "100vh", width: "100vw" }}>
@@ -175,7 +174,7 @@ const AddEmployee: React.FC = () => {
               rules={[
                 {
                   required: true,
-                  message: "กรุณากรอกเบอร์โทรศัพท์ !",
+                  message: "กรุณากรอกเบอร์โทรศัพท์",
                 },
                 {
                   pattern: /^[0]\d{9}$/,
@@ -226,11 +225,11 @@ const AddEmployee: React.FC = () => {
               rules={[
                 {
                   type: "email",
-                  message: "รูปแบบอีเมลไม่ถูกต้อง !",
+                  message: "รูปแบบอีเมลไม่ถูกต้อง",
                 },
                 {
                   required: true,
-                  message: "กรุณากรอกอีเมล !",
+                  message: "กรุณากรอกอีเมล",
                 },
               ]}
             >
@@ -259,6 +258,7 @@ const AddEmployee: React.FC = () => {
             <Form.Item
               label="รูปประจำตัว"
               name="profile"
+              rules={[{ required: true, message: "กรุณาใส่รูปภาพ" }]}
               valuePropName="fileList"
               getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
             >

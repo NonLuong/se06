@@ -21,16 +21,32 @@ async function createEmployee(data: EmployeeInterface) {
 
   try {
     const response = await fetch(`${apiUrl}/employees`, requestOptions);
-    console.log(response)
+
+    // Log response for debugging
+    console.log("Response from API:", response);
+
+    // Check if response status is not OK (2xx)
     if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status}`);
+      const errorMessage = `HTTP Error: ${response.status} - ${response.statusText}`;
+      console.error("Error in response:", errorMessage);
+
+      // Attempt to extract error message from response body
+      const errorBody = await response.json().catch(() => null);
+      throw new Error(
+        errorBody?.message || errorMessage || "Unknown error occurred"
+      );
     }
+
+    // Return JSON response if successful
     return await response.json();
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating employee:", error);
-    return { status: 500, message: "Server Error" };
+
+    // Re-throw the error to be handled by caller
+    throw error;
   }
 }
+
 
 
 // List Employees
@@ -109,7 +125,7 @@ async function deleteEmployee(id: number) {
 // service/https/Employee/index.ts
 export const updateEmployee = async (employee: EmployeeInterface) => {
   try {
-    const response = await axios.put(`/employees/${employee.id}`, employee);
+    const response = await axios.put(`/employees/${employee.ID}`, employee);
     return response;
   } catch (error) {
     console.error("Error updating employee:", error);
