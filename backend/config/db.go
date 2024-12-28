@@ -50,6 +50,8 @@ func SetupDatabase() {
 		&entity.TrainBook{},
 		&entity.Trainers{},
 		&entity.Rooms{},
+		&entity.BankName{},
+
 
 	)
 
@@ -254,7 +256,7 @@ func SetupDatabase() {
 	BankSCB := entity.BankName{BankName: "ธนาคารไทยพาณิชย์"}
 	BankKrungthai := entity.BankName{BankName: "ธนาคารกรุงไทย"}
 	BankTMB := entity.BankName{BankName: "ธนาคารทหารไทย"}
-	
+
 	// ใช้ FirstOrCreate เพื่อป้องกันการสร้างข้อมูลซ้ำ
 	db.FirstOrCreate(&BankBangkok, &entity.BankName{BankName: "ธนาคารกรุงเทพ"})
 	db.FirstOrCreate(&BankKasikorn, &entity.BankName{BankName: "ธนาคารกสิกรไทย"})
