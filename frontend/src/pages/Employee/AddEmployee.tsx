@@ -86,25 +86,24 @@ const AddEmployee: React.FC = () => {
         position_id: values.position,
         gender_id: values.gender,
       };
-  
+
       const response = await createEmployee(employeeData);
-  
+
       messageApi.open({
         type: "success",
         content: "บันทึกข้อมูลพนักงานสำเร็จ!",
       });
-      setTimeout(() => navigate("/employees"), 2000);
+      //setTimeout(() => navigate("/employees"), 2000);
     } catch (error: any) {
       console.error("Error in handleFinish:", error.message || error);
-  
+
       messageApi.open({
         type: "error",
         content: `บันทึกข้อมูลล้มเหลว: ${error.message || "เกิดข้อผิดพลาด!"}`,
       });
     }
   };
-  
-  
+
   return (
     <div style={{ display: "flex", minHeight: "100vh", width: "100vw" }}>
       {/* Sidebar */}
@@ -256,18 +255,20 @@ const AddEmployee: React.FC = () => {
             </Form.Item>
 
             <Form.Item
+              id="profile"
               label="รูปประจำตัว"
               name="profile"
-              rules={[{ required: true, message: "กรุณาใส่รูปภาพ" }]}
               valuePropName="fileList"
               getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
             >
               <ImgCrop rotationSlider>
                 <Upload
+                  beforeUpload={() => false} // ปิดการอัปโหลดอัตโนมัติ
                   fileList={fileList}
                   onChange={onChange}
                   listType="picture-card"
                   onPreview={onPreview}
+                  id="employeePic" // เพิ่ม id สำหรับ Selenium
                 >
                   {fileList.length < 1 && (
                     <div>
