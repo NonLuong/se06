@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"project-se/entity" // เปลี่ยนเป็น path ที่เหมาะสมกับโปรเจค
+	"project-se/entity"
 	"github.com/asaskevich/govalidator"
 	. "github.com/onsi/gomega"
 )
@@ -20,7 +20,7 @@ func TestFirstname(t *testing.T) {
 			PhoneNumber: "0801234567",
 			DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			IdentificationNumber: "1234567890123",
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345678",
 			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
 			Income: 5000.00,
 			Email: "john.doe@example.com",
@@ -52,7 +52,7 @@ func TestLastname(t *testing.T) {
 			PhoneNumber: "0801234567",
 			DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			IdentificationNumber: "1234567890123",
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345678",
 			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
 			Income: 5000.00,
 			Email: "john.doe@example.com",
@@ -85,7 +85,7 @@ func TestPhoneNumberdriver(t *testing.T) {
 			PhoneNumber: "", // ทดสอบ PhoneNumber ว่าง
 			DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			IdentificationNumber: "1234567890123",
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345678",
 			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
 			Income: 5000.00,
 			Email: "john.doe@example.com",
@@ -99,14 +99,14 @@ func TestPhoneNumberdriver(t *testing.T) {
 		g.Expect(err.Error()).To(ContainSubstring("PhoneNumber is required"))
 	})
 
-	t.Run(`PhoneNumber must be 10 digits`, func(t *testing.T) {
+	t.Run(`PhoneNumber contain exactly 10 digits`, func(t *testing.T) {
 		driver := entity.Driver{
 			Firstname: "John",
 			Lastname:  "Doe",
 			PhoneNumber: "08012345678", // เกิน 10 หลัก
 			DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			IdentificationNumber: "1234567890123",
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345678",
 			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
 			Income: 5000.00,
 			Email: "john.doe@example.com",
@@ -117,8 +117,30 @@ func TestPhoneNumberdriver(t *testing.T) {
 
 		g.Expect(ok).NotTo(BeTrue())
 		g.Expect(err).NotTo(BeNil())
-		g.Expect(err.Error()).To(ContainSubstring("PhoneNumber must be 10 digits"))
+		g.Expect(err.Error()).To(ContainSubstring("PhoneNumber must start with 0 and contain exactly 10 digits"))
 	})
+
+	t.Run(`PhoneNumber must start with 0`, func(t *testing.T) {
+		driver := entity.Driver{
+			Firstname: "John",
+			Lastname:  "Doe",
+			PhoneNumber: "1801234567", // ไม่เริ่มด้วย 0
+			DateOfBirth: time.Now().AddDate(-30, 0, 0),
+			IdentificationNumber: "1234567890",
+			DriverLicensenumber: "12345678",
+			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
+			Income: 5000.00,
+			Email: "john.doe@example.com",
+			Password: "password123",
+		}
+
+		ok, err := govalidator.ValidateStruct(driver)
+
+		g.Expect(ok).NotTo(BeTrue())
+		g.Expect(err).NotTo(BeNil())
+		g.Expect(err.Error()).To(ContainSubstring("PhoneNumber must start with 0 and contain exactly 10 digits"))
+	})
+
 }
 
 func TestDateOfBirth(t *testing.T) {
@@ -131,7 +153,7 @@ func TestDateOfBirth(t *testing.T) {
 			PhoneNumber: "0801234567",
 			DateOfBirth: time.Time{}, // ไม่กำหนดค่าวันเกิด
 			IdentificationNumber: "1234567890123",
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345678",
 			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
 			Income: 5000.00,
 			Email: "john.doe@example.com",
@@ -164,7 +186,7 @@ func TestIncome(t *testing.T) {
 			PhoneNumber: "0801234567",
 			DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			IdentificationNumber: "1234567890123",
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345678",
 			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
 			Income: 0.0, // ไม่กำหนดค่า Income
 			Email: "john.doe@example.com",
@@ -193,7 +215,7 @@ func TestIncome(t *testing.T) {
 			PhoneNumber: "0801234567",
 			DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			IdentificationNumber: "1234567890123",
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345678",
 			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
 			Income: -1000.50, // ทดสอบค่าที่อาจไม่ถูกต้องตามตรรกะ
 			Email: "john.doe@example.com",
@@ -225,7 +247,7 @@ func TestPassword(t *testing.T) {
 			PhoneNumber: "0801234567",
 			DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			IdentificationNumber: "1234567890123",
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345678",
 			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
 			Income: 5000.00,
 			Email: "john.doe@example.com",
@@ -254,7 +276,7 @@ func TestPassword(t *testing.T) {
 			PhoneNumber: "0801234567",
 			DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			IdentificationNumber: "1234567890123",
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345678",
 			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
 			Income: 5000.00,
 			Email: "john.doe@example.com",
@@ -286,7 +308,7 @@ func TestIdentificationNumber(t *testing.T) {
 			PhoneNumber: "0801234567",
 			DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			IdentificationNumber: "", // เว้นว่างไว้เพื่อทดสอบเฉพาะ IdentificationNumber
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345678",
 			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
 			Income: 5000.00,
 			Email: "john.doe@example.com",
@@ -306,6 +328,94 @@ func TestIdentificationNumber(t *testing.T) {
 		g.Expect(err).NotTo(BeNil()) // ต้องมีข้อผิดพลาด
 		g.Expect(err.Error()).To(ContainSubstring("IdentificationNumber is required"))
 	})
+
+	t.Run(`IdentificationNumber must contain exactly 13 digits`, func(t *testing.T) {
+		driver := entity.Driver{
+			Firstname: "John",
+			Lastname:  "Doe",
+			PhoneNumber: "0801234567",
+			DateOfBirth: time.Now().AddDate(-30, 0, 0),
+			IdentificationNumber: "1478954652148745", // เกิน 13 ตัว
+			DriverLicensenumber: "12345678",
+			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
+			Income: 5000.00,
+			Email: "john.doe@example.com",
+			Password: "password123",
+			GenderID: 1,
+			LocationID: 1,
+			VehicleID: 1,
+			EmployeeID: 1,
+			StatusID: 1,
+			RoleID: 1,
+		}
+
+		ok, err := govalidator.ValidateStruct(driver)
+
+		// ตรวจสอบเฉพาะ IdentificationNumber
+		g.Expect(ok).NotTo(BeTrue()) // Validate ต้องไม่ผ่าน
+		g.Expect(err).NotTo(BeNil()) // ต้องมีข้อผิดพลาด
+		g.Expect(err.Error()).To(ContainSubstring("IdentificationNumber must contain exactly 13 digits"))
+	})
+}
+
+func TestDriverLicensenumber(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	t.Run(`DriverLicensenumber is required`, func(t *testing.T) {
+		driver := entity.Driver{
+			Firstname: "John",
+			Lastname:  "Doe",
+			PhoneNumber: "0801234567",
+			DateOfBirth: time.Now().AddDate(-30, 0, 0),
+			IdentificationNumber: "1234578454685",
+			DriverLicensenumber: "",// เว้นว่างไว้
+			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
+			Income: 5000.00,
+			Email: "john.doe@example.com",
+			Password: "password123",
+			GenderID: 1,
+			LocationID: 1,
+			VehicleID: 1,
+			EmployeeID: 1,
+			StatusID: 1,
+			RoleID: 1,
+		}
+
+		ok, err := govalidator.ValidateStruct(driver)
+
+		// ตรวจสอบเฉพาะ IdentificationNumber
+		g.Expect(ok).NotTo(BeTrue()) // Validate ต้องไม่ผ่าน
+		g.Expect(err).NotTo(BeNil()) // ต้องมีข้อผิดพลาด
+		g.Expect(err.Error()).To(ContainSubstring("DriverLicensenumber is required"))
+	})
+
+	t.Run(`IdentificationNumber must contain exactly 13 digits`, func(t *testing.T) {
+		driver := entity.Driver{
+			Firstname: "John",
+			Lastname:  "Doe",
+			PhoneNumber: "0801234567",
+			DateOfBirth: time.Now().AddDate(-30, 0, 0),
+			IdentificationNumber: "1234578454685", 
+			DriverLicensenumber: "5877123456",	// เกิน 8 ตัว
+			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
+			Income: 5000.00,
+			Email: "john.doe@example.com",
+			Password: "password123",
+			GenderID: 1,
+			LocationID: 1,
+			VehicleID: 1,
+			EmployeeID: 1,
+			StatusID: 1,
+			RoleID: 1,
+		}
+
+		ok, err := govalidator.ValidateStruct(driver)
+
+		// ตรวจสอบเฉพาะ IdentificationNumber
+		g.Expect(ok).NotTo(BeTrue()) // Validate ต้องไม่ผ่าน
+		g.Expect(err).NotTo(BeNil()) // ต้องมีข้อผิดพลาด
+		g.Expect(err.Error()).To(ContainSubstring("DriverLicensenumber must contain exactly 8 digits"))
+	})
 }
 
 func TestEmaildriver(t *testing.T) {
@@ -318,7 +428,7 @@ func TestEmaildriver(t *testing.T) {
 			PhoneNumber: "0801234567",
 			DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			IdentificationNumber: "1234567890123",
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345678",
 			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
 			Income: 5000.00,
 			Email: "", // ทดสอบ Email เว้นว่างไว้
@@ -346,7 +456,7 @@ func TestEmaildriver(t *testing.T) {
 			PhoneNumber: "0801234567",
 			DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			IdentificationNumber: "1234567890123",
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345678",
 			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
 			Income: 5000.00,
 			Email: "invalid-email", // ฟอร์แมตอีเมลไม่ถูกต้อง
@@ -378,7 +488,7 @@ func TestDriverLicenseExpirationDate(t *testing.T) {
 			PhoneNumber: "0801234567",
 			DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			IdentificationNumber: "1234567890123",
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345678",
 			DriverLicenseExpirationDate: time.Time{}, // ไม่กำหนดวันหมดอายุใบขับขี่
 			Income: 5000.00,
 			Email: "john.doe@example.com",
@@ -411,7 +521,7 @@ func TestValidDriver(t *testing.T) {
 			PhoneNumber: "0801234567",
 			DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			IdentificationNumber: "1234567890123",
-			DriverLicensenumber: "DL123456",
+			DriverLicensenumber: "12345612",
 			DriverLicenseExpirationDate: time.Now().AddDate(1, 0, 0),
 			Income: 5000.00,
 			Email: "john.doe@example.com",
