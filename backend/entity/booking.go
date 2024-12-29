@@ -15,8 +15,9 @@ type Booking struct {
 	TotalPrice    float64 `json:"total_price" valid:"float,required~Total price is required."`
 	BookingTime   string  `json:"booking_time" valid:"required~Booking time is required."`
 	BookingStatus string  `json:"booking_status" valid:"required~Booking status is required."`
+	
 	Vehicle       string  `json:"vehicle" valid:"required~Vehicle is required."`
-
+	
 	PassengerID uint `json:"passenger_id" valid:"required~PassengerID is required."`
 	Passenger   Passenger `gorm:"foreignKey:PassengerID" json:"passenger" valid:"-"` // ไม่ Validate Nested Struct
 

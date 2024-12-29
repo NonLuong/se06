@@ -23,7 +23,6 @@ const DriverBooking = () => {
         alert('ไม่สามารถดึงข้อมูลการจองได้');
       }
     };
-
     if (bookingId) {
       fetchBooking();
     }

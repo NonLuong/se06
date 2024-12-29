@@ -2,11 +2,10 @@ package config
 
 import (
 	"fmt"
-	"project-se/entity"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"project-se/entity"
 	"time"
-	
 )
 
 var db *gorm.DB
@@ -47,6 +46,9 @@ func SetupDatabase() {
 		&entity.DiscountType{},
 		&entity.Promotion{},
 		&entity.StatusPromotion{},
+		&entity.Withdrawal{},
+		&entity.Commission{},
+		&entity.BankName{},
 		&entity.TrainBook{},
 		&entity.Trainers{},
 		&entity.Rooms{},
@@ -104,16 +106,16 @@ func SetupDatabase() {
 	promotions := []entity.Promotion{
 		{
 			PromotionCode:        "DRIVE001",
-			PromotionName:        "ส่งฟรี ไม่มีข้อแม้!",
-			PromotionDescription: "รับบริการส่งฟรีสำหรับระยะทางไม่เกิน 10 กม.",
-			Discount:             100.0, // คิดเป็นส่วนลดเต็ม 100%
+			PromotionName:        "ส่งฟรี ไม่มีข้อแม้ !",
+			PromotionDescription: "ฟรีสำหรับลูกค้าทุกท่าน",
+			Discount:             100, // คิดเป็นส่วนลดเต็ม 100%
 			EndDate:              time.Now().Add(30 * 24 * time.Hour),
-			UseLimit:             5,
+			UseLimit:             2,
 			UseCount:             0,
 			DistancePromotion :             10.0,
 			Photo:                "promo1.jpg",
 			DiscountTypeID:       2, // Percent discount
-			StatusPromotionID:             1, // ACTIVE
+			StatusPromotionID:    1, // ACTIVE
 		},
 		{
 			PromotionCode:        "DRIVE002",
@@ -204,33 +206,33 @@ func SetupDatabase() {
 			DistancePromotion :             6.0,
 			Photo:                "promo8.jpg",
 			DiscountTypeID:       2, // Percent discount
-			StatusPromotionID:             2, // ACTIVE
+			StatusPromotionID:    1, // ACTIVE
 		},
 		{
 			PromotionCode:        "DRIVE009",
-			PromotionName:        "18 กม. ลดแรง 25%",
-			PromotionDescription: "ลด 25% สำหรับระยะทางเกิน 18 กม.",
-			Discount:             25.0,
-			EndDate:              time.Now().Add(90 * 24 * time.Hour),
-			UseLimit:             3,
+			PromotionName:        "ลด 35% สุดโหด",
+			PromotionDescription: "ภายในพื้นที่ 8 กม.",
+			Discount:             35, // ส่วนลด 30%
+			EndDate:              time.Now().Add(30 * 24 * time.Hour),
+			UseLimit:             9,
 			UseCount:             0,
 			DistancePromotion :             18.0,
 			Photo:                "promo9.jpg",
 			DiscountTypeID:       2, // Percent discount
-			StatusPromotionID:             2, // ACTIVE
+			StatusPromotionID:    1, // ACTIVE
 		},
 		{
 			PromotionCode:        "DRIVE010",
-			PromotionName:        "ระยะทางใกล้ ส่งฟรี!",
-			PromotionDescription: "ระยะทางไม่เกิน 5 กม. รับบริการส่งฟรี",
-			Discount:             100.0, // คิดเป็นส่วนลดเต็ม 100%
-			EndDate:              time.Now().Add(60 * 24 * time.Hour),
-			UseLimit:             1,
+			PromotionName:        "คุ้มกว่านี้มีอีกไหม 99",
+			PromotionDescription: "ลด 99% เหมือนส่งฟรีระยะทางขั้นต่ำ 30 กม.",
+			Discount:             99, // ส่วนลด 99%
+			EndDate:              time.Now().Add(30 * 24 * time.Hour),
+			UseLimit:             4,
 			UseCount:             0,
 			DistancePromotion :             5.0,
 			Photo:                "promo10.jpg",
 			DiscountTypeID:       2, // Percent discount
-			StatusPromotionID:              2, // ACTIVE
+			StatusPromotionID:    2, // close
 		},
 	}
 	// บันทึกข้อมูลโปรโมชั่นตัวอย่างลงในฐานข้อมูล
@@ -239,10 +241,10 @@ func SetupDatabase() {
 	}
 
 	// สร้างข้อมูลตัวอย่าง Status
-	ActiveStatus := entity.StatusPromotion{Status: "ACTIVE"}
-	ExpiredStatus := entity.StatusPromotion{Status: "EXPIRED"}
-	db.FirstOrCreate(&ActiveStatus, &entity.StatusPromotion{Status: "ACTIVE"})
-	db.FirstOrCreate(&ExpiredStatus, &entity.StatusPromotion{Status: "EXPIRED"})
+	ActiveStatus := entity.StatusPromotion{StatusPromotion: "ACTIVE"}
+	ExpiredStatus := entity.StatusPromotion{StatusPromotion: "EXPIRED"}
+	db.FirstOrCreate(&ActiveStatus, &entity.StatusPromotion{StatusPromotion: "ACTIVE"})
+	db.FirstOrCreate(&ExpiredStatus, &entity.StatusPromotion{StatusPromotion: "EXPIRED"})
 
 	// สร้างข้อมูลตัวอ ย่าง DiscountType
 	AmountDiscount := entity.DiscountType{DiscountType: "amount"}
@@ -256,7 +258,6 @@ func SetupDatabase() {
 	BankSCB := entity.BankName{BankName: "ธนาคารไทยพาณิชย์"}
 	BankKrungthai := entity.BankName{BankName: "ธนาคารกรุงไทย"}
 	BankTMB := entity.BankName{BankName: "ธนาคารทหารไทย"}
-
 	// ใช้ FirstOrCreate เพื่อป้องกันการสร้างข้อมูลซ้ำ
 	db.FirstOrCreate(&BankBangkok, &entity.BankName{BankName: "ธนาคารกรุงเทพ"})
 	db.FirstOrCreate(&BankKasikorn, &entity.BankName{BankName: "ธนาคารกสิกรไทย"})
@@ -350,7 +351,7 @@ func SetupDatabase() {
 			Password:                    hashedPassword,
 			Income:                      25000.50,
 			DateOfBirth:                 time.Date(1985, time.December, 1, 0, 0, 0, 0, time.UTC),
-			RoleID:                     roleDriver.ID,
+			RoleID:                      roleDriver.ID,
 			GenderID:                    GenderMale.ID,
 			EmployeeID:                  2,
 			VehicleID:					 1,
@@ -368,7 +369,7 @@ func SetupDatabase() {
 			Password:                    hashedPassword,
 			Income:                      27000.75,
 			DateOfBirth:                 time.Date(1986, time.January, 15, 0, 0, 0, 0, time.UTC),
-			RoleID:                     roleDriver.ID,
+			RoleID:                      roleDriver.ID,
 			GenderID:                    GenderMale.ID,
 			EmployeeID:                  2,
 			VehicleID:					 2,
@@ -386,7 +387,7 @@ func SetupDatabase() {
 			Password:                    hashedPassword,
 			Income:                      28000.25,
 			DateOfBirth:                 time.Date(1983, time.June, 15, 0, 0, 0, 0, time.UTC),
-			RoleID:                     roleDriver.ID,
+			RoleID:                      roleDriver.ID,
 			GenderID:                    GenderMale.ID,
 			EmployeeID:                  3,
 			VehicleID:					 6,
@@ -404,7 +405,7 @@ func SetupDatabase() {
 			Password:                    hashedPassword,
 			Income:                      29000.00,
 			DateOfBirth:                 time.Date(1987, time.February, 10, 0, 0, 0, 0, time.UTC),
-			RoleID:                     roleDriver.ID,
+			RoleID:                      roleDriver.ID,
 			GenderID:                    GenderFemale.ID,
 			EmployeeID:                  3,
 			VehicleID:					 4,
@@ -422,7 +423,7 @@ func SetupDatabase() {
 			Password:                    hashedPassword,
 			Income:                      25000.00,
 			DateOfBirth:                 time.Date(1988, time.September, 25, 0, 0, 0, 0, time.UTC),
-			RoleID:                     roleDriver.ID,
+			RoleID:                      roleDriver.ID,
 			GenderID:                    GenderFemale.ID,
 			EmployeeID:                  2,
 			VehicleID:					 5,
@@ -440,7 +441,7 @@ func SetupDatabase() {
 			Password:                    hashedPassword,
 			Income:                      26000.75,
 			DateOfBirth:                 time.Date(1984, time.April, 5, 0, 0, 0, 0, time.UTC),
-			RoleID:                     roleDriver.ID,
+			RoleID:                      roleDriver.ID,
 			GenderID:                    GenderFemale.ID,
 			EmployeeID:                  2,
 			VehicleID:					 3,
@@ -454,173 +455,173 @@ func SetupDatabase() {
 		db.FirstOrCreate(d, entity.Driver{DriverLicensenumber: d.DriverLicensenumber})
 	}
 
-		// สร้าง Gender
-		VehicleType1 := entity.VehicleType{VehicleType: "Motorcycle"}
-		VehicleType2 := entity.VehicleType{VehicleType: "Car"}
-		// ใช้ db.FirstOrCreate เพื่อป้องกันข้อมูลซ้ำ
-		db.FirstOrCreate(&VehicleType1, &entity.VehicleType{VehicleType: "Motorcycle"})
-		db.FirstOrCreate(&VehicleType2, &entity.VehicleType{VehicleType: "Car"})
+	// สร้าง Gender
+	VehicleType1 := entity.VehicleType{VehicleType: "Motorcycle"}
+	VehicleType2 := entity.VehicleType{VehicleType: "Car"}
+	// ใช้ db.FirstOrCreate เพื่อป้องกันข้อมูลซ้ำ
+	db.FirstOrCreate(&VehicleType1, &entity.VehicleType{VehicleType: "Motorcycle"})
+	db.FirstOrCreate(&VehicleType2, &entity.VehicleType{VehicleType: "Car"})
 
 	vehicles := []entity.Vehicle{
 		// มอเตอร์ไซค์ 3 คัน
 		{
-			LicensePlate:                "กกก123",
-			Brand:                       "Yamaha",
-			VehicleModel:                "NMAX",
-			Color:                       "Blue",
-			DateOfPurchase:              time.Date(2021, time.January, 10, 0, 0, 0, 0, time.UTC),
-			ExpirationDateOfVehicleAct:  time.Date(2026, time.January, 10, 0, 0, 0, 0, time.UTC),
-			Capacity:                    2,
-			VehicleTypeID:               1, // มอเตอร์ไซค์
-			EmployeeID:                  3,
+			LicensePlate:               "กกก123",
+			Brand:                      "Yamaha",
+			VehicleModel:               "NMAX",
+			Color:                      "Blue",
+			DateOfPurchase:             time.Date(2021, time.January, 10, 0, 0, 0, 0, time.UTC),
+			ExpirationDateOfVehicleAct: time.Date(2026, time.January, 10, 0, 0, 0, 0, time.UTC),
+			Capacity:                   2,
+			VehicleTypeID:              1, // มอเตอร์ไซค์
+			EmployeeID:                 3,
 		},
 		{
-			LicensePlate:                "ขข5678",
-			Brand:                       "Honda",
-			VehicleModel:                "PCX",
-			Color:                       "Red",
-			DateOfPurchase:              time.Date(2020, time.June, 15, 0, 0, 0, 0, time.UTC),
-			ExpirationDateOfVehicleAct:  time.Date(2025, time.June, 15, 0, 0, 0, 0, time.UTC),
-			Capacity:                    2,
-			VehicleTypeID:               1, // มอเตอร์ไซค์
-			EmployeeID:                  3,
+			LicensePlate:               "ขข5678",
+			Brand:                      "Honda",
+			VehicleModel:               "PCX",
+			Color:                      "Red",
+			DateOfPurchase:             time.Date(2020, time.June, 15, 0, 0, 0, 0, time.UTC),
+			ExpirationDateOfVehicleAct: time.Date(2025, time.June, 15, 0, 0, 0, 0, time.UTC),
+			Capacity:                   2,
+			VehicleTypeID:              1, // มอเตอร์ไซค์
+			EmployeeID:                 3,
 		},
 		{
-			LicensePlate:                "คค9012",
-			Brand:                       "Kawasaki",
-			VehicleModel:                "Z125",
-			Color:                       "Green",
-			DateOfPurchase:              time.Date(2022, time.February, 20, 0, 0, 0, 0, time.UTC),
-			ExpirationDateOfVehicleAct:  time.Date(2027, time.February, 20, 0, 0, 0, 0, time.UTC),
-			Capacity:                    2,
-			VehicleTypeID:               1, // มอเตอร์ไซค์
-			EmployeeID:                  3,
+			LicensePlate:               "คค9012",
+			Brand:                      "Kawasaki",
+			VehicleModel:               "Z125",
+			Color:                      "Green",
+			DateOfPurchase:             time.Date(2022, time.February, 20, 0, 0, 0, 0, time.UTC),
+			ExpirationDateOfVehicleAct: time.Date(2027, time.February, 20, 0, 0, 0, 0, time.UTC),
+			Capacity:                   2,
+			VehicleTypeID:              1, // มอเตอร์ไซค์
+			EmployeeID:                 3,
 		},
-	
+
 		// รถยนต์ 3 คัน
 		{
-			LicensePlate:                "งง3456",
-			Brand:                       "Toyota",
-			VehicleModel:                "Camry",
-			Color:                       "White",
-			DateOfPurchase:              time.Date(2019, time.March, 5, 0, 0, 0, 0, time.UTC),
-			ExpirationDateOfVehicleAct:  time.Date(2024, time.March, 5, 0, 0, 0, 0, time.UTC),
-			Capacity:                    5,
-			VehicleTypeID:               2, // รถยนต์
-			EmployeeID:                  3,
+			LicensePlate:               "งง3456",
+			Brand:                      "Toyota",
+			VehicleModel:               "Camry",
+			Color:                      "White",
+			DateOfPurchase:             time.Date(2019, time.March, 5, 0, 0, 0, 0, time.UTC),
+			ExpirationDateOfVehicleAct: time.Date(2024, time.March, 5, 0, 0, 0, 0, time.UTC),
+			Capacity:                   5,
+			VehicleTypeID:              2, // รถยนต์
+			EmployeeID:                 3,
 		},
 		{
-			LicensePlate:                "จจ7890",
-			Brand:                       "Honda",
-			VehicleModel:                "Civic",
-			Color:                       "Black",
-			DateOfPurchase:              time.Date(2020, time.July, 20, 0, 0, 0, 0, time.UTC),
-			ExpirationDateOfVehicleAct:  time.Date(2025, time.July, 20, 0, 0, 0, 0, time.UTC),
-			Capacity:                    5,
-			VehicleTypeID:               2, // รถยนต์
-			EmployeeID:                  3,
+			LicensePlate:               "จจ7890",
+			Brand:                      "Honda",
+			VehicleModel:               "Civic",
+			Color:                      "Black",
+			DateOfPurchase:             time.Date(2020, time.July, 20, 0, 0, 0, 0, time.UTC),
+			ExpirationDateOfVehicleAct: time.Date(2025, time.July, 20, 0, 0, 0, 0, time.UTC),
+			Capacity:                   5,
+			VehicleTypeID:              2, // รถยนต์
+			EmployeeID:                 3,
 		},
 		{
-			LicensePlate:                "ฉฉ1234",
-			Brand:                       "Mazda",
-			VehicleModel:                "CX-5",
-			Color:                       "Gray",
-			DateOfPurchase:              time.Date(2021, time.September, 15, 0, 0, 0, 0, time.UTC),
-			ExpirationDateOfVehicleAct:  time.Date(2026, time.September, 15, 0, 0, 0, 0, time.UTC),
-			Capacity:                    5,
-			VehicleTypeID:               2, // รถยนต์
-			EmployeeID:                  3,
+			LicensePlate:               "ฉฉ1234",
+			Brand:                      "Mazda",
+			VehicleModel:               "CX-5",
+			Color:                      "Gray",
+			DateOfPurchase:             time.Date(2021, time.September, 15, 0, 0, 0, 0, time.UTC),
+			ExpirationDateOfVehicleAct: time.Date(2026, time.September, 15, 0, 0, 0, 0, time.UTC),
+			Capacity:                   5,
+			VehicleTypeID:              2, // รถยนต์
+			EmployeeID:                 3,
 		},
 	}
-	
+
 	// บันทึกข้อมูล Vehicle ลงฐานข้อมูล
 	for _, v := range vehicles {
 		db.FirstOrCreate(&v, entity.Vehicle{LicensePlate: v.LicensePlate})
 	}
-	
+
 	passengers := []entity.Passenger{
 		{
-			UserName:     "Anuwat",
-			FirstName:    "Anuwat",
-			LastName:     "Thongchai",
-			PhoneNumber:  "0811111111",
-			Email:        "anuwat1@gmail.com",
-			Password:     hashedPassword, // เก็บ Hash
-			GenderID:     1,
-			RoleID:       1,
+			UserName:    "Anuwat",
+			FirstName:   "Anuwat",
+			LastName:    "Thongchai",
+			PhoneNumber: "0811111111",
+			Email:       "anuwat1@gmail.com",
+			Password:    hashedPassword, // เก็บ Hash
+			GenderID:    1,
+			RoleID:      1,
 		},
 		{
-			UserName:     "Chatchai",
-			FirstName:    "Chatchai",
-			LastName:     "Prasert",
-			PhoneNumber:  "0812222222",
-			Email:        "chatchai2@gmail.com",
-			Password:     hashedPassword,
-			GenderID:     1,
-			RoleID:       1,
+			UserName:    "Chatchai",
+			FirstName:   "Chatchai",
+			LastName:    "Prasert",
+			PhoneNumber: "0812222222",
+			Email:       "chatchai2@gmail.com",
+			Password:    hashedPassword,
+			GenderID:    1,
+			RoleID:      1,
 		},
 		{
-			UserName:     "Kittipong",
-			FirstName:    "Kittipong",
-			LastName:     "Suwan",
-			PhoneNumber:  "0813333333",
-			Email:        "kittipong3@gmail.com",
-			Password:     hashedPassword,
-			GenderID:     1,
-			RoleID:       1,
+			UserName:    "Kittipong",
+			FirstName:   "Kittipong",
+			LastName:    "Suwan",
+			PhoneNumber: "0813333333",
+			Email:       "kittipong3@gmail.com",
+			Password:    hashedPassword,
+			GenderID:    1,
+			RoleID:      1,
 		},
 		{
-			UserName:     "Nattapon",
-			FirstName:    "Nattapon",
-			LastName:     "Somchai",
-			PhoneNumber:  "0814444444",
-			Email:        "nattapon4@gmail.com",
-			Password:     hashedPassword,
-			GenderID:     1,
-			RoleID:       1,
+			UserName:    "Nattapon",
+			FirstName:   "Nattapon",
+			LastName:    "Somchai",
+			PhoneNumber: "0814444444",
+			Email:       "nattapon4@gmail.com",
+			Password:    hashedPassword,
+			GenderID:    1,
+			RoleID:      1,
 		},
 		{
-			UserName:     "Siriporn",
-			FirstName:    "Siriporn",
-			LastName:     "Jantakan",
-			PhoneNumber:  "0815555555",
-			Email:        "siriporn1@gmail.com",
-			Password:     hashedPassword,
-			GenderID:     2,
-			RoleID:       1,
+			UserName:    "Siriporn",
+			FirstName:   "Siriporn",
+			LastName:    "Jantakan",
+			PhoneNumber: "0815555555",
+			Email:       "siriporn1@gmail.com",
+			Password:    hashedPassword,
+			GenderID:    2,
+			RoleID:      1,
 		},
 		{
-			UserName:     "Nanthicha",
-			FirstName:    "Nanthicha",
-			LastName:     "Phanwichai",
-			PhoneNumber:  "0816666666",
-			Email:        "nanthicha2@gmail.com",
-			Password:     hashedPassword,
-			GenderID:     2,
-			RoleID:       1,
+			UserName:    "Nanthicha",
+			FirstName:   "Nanthicha",
+			LastName:    "Phanwichai",
+			PhoneNumber: "0816666666",
+			Email:       "nanthicha2@gmail.com",
+			Password:    hashedPassword,
+			GenderID:    2,
+			RoleID:      1,
 		},
 		{
-			UserName:     "Chanidapa",
-			FirstName:    "Chanidapa",
-			LastName:     "Rungroj",
-			PhoneNumber:  "0817777777",
-			Email:        "chanidapa3@gmail.com",
-			Password:     hashedPassword,
-			GenderID:     2,
-			RoleID:       1,
+			UserName:    "Chanidapa",
+			FirstName:   "Chanidapa",
+			LastName:    "Rungroj",
+			PhoneNumber: "0817777777",
+			Email:       "chanidapa3@gmail.com",
+			Password:    hashedPassword,
+			GenderID:    2,
+			RoleID:      1,
 		},
 		{
-			UserName:     "Supattra",
-			FirstName:    "Supattra",
-			LastName:     "Kraiwit",
-			PhoneNumber:  "0818888888",
-			Email:        "supattra4@gmail.com",
-			Password:     hashedPassword,
-			GenderID:     GenderFemale.ID,
-			RoleID:       1,
+			UserName:    "Supattra",
+			FirstName:   "Supattra",
+			LastName:    "Kraiwit",
+			PhoneNumber: "0818888888",
+			Email:       "supattra4@gmail.com",
+			Password:    hashedPassword,
+			GenderID:    GenderFemale.ID,
+			RoleID:      1,
 		},
 	}
-	
+
 	// บันทึกข้อมูล Passenger ลงฐานข้อมูล
 	for _, p := range passengers {
 		db.FirstOrCreate(&p, entity.Passenger{Email: p.Email})

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   UserOutlined,
   TeamOutlined,
@@ -11,9 +11,68 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import type { MenuProps } from "antd";
-import "./AdminSidebar.css"; // Import ไฟล์ CSS
+import { useNavigate, useLocation } from "react-router-dom";
 
 const { Sider } = Layout;
+
+const styles = {
+  sider: {
+    height: "100vh",
+    backgroundColor: "#8792e7",
+    color: "#fff",
+    transition: "all 0.3s ease-in-out",
+  },
+  logo: {
+    textAlign: "center",
+    padding: "20px",
+    color: "#fff",
+    fontSize: "22px",
+    transition: "all 0.3s",
+  },
+  logoCollapsed: {
+    fontSize: "16px",
+  },
+  logoCircle: {
+    background: "#fff",
+    width: "100px",
+    height: "100px",
+    borderRadius: "50%",
+    margin: "0 auto 10px",
+    transition: "all 0.3s",
+  },
+  logoCircleCollapsed: {
+    width: "50px",
+    height: "50px",
+  },
+  menu: {
+    backgroundColor: "transparent",
+    fontWeight: "bold",
+  },
+  menuItem: {
+    fontSize: "16px",
+    height: "60px",
+    display: "flex",
+    alignItems: "center",
+    paddingLeft: "20px",
+    fontWeight: "bold",
+    transition: "all 0.3s",
+    color: "#000",
+  },
+  menuItemCollapsed: {
+    justifyContent: "center",
+    paddingLeft: "0",
+  },
+  menuItemLogout: {
+    color: "#ff4d4f",
+  },
+  iconStyle: {
+    fontSize: "24px",
+    marginRight: "10px",
+  },
+  iconStyleCollapsed: {
+    marginRight: "0",
+  },
+};
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -32,18 +91,29 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem("DASHBOARD", "dashboard", <DashboardOutlined style={{ fontSize: "30px" }} />),
-  getItem("EMPLOYEE", "employee", <UserOutlined style={{ fontSize: "30px" }} />),
-  getItem("MEMBER", "members", <TeamOutlined style={{ fontSize: "30px" }} />),
-  getItem("DRIVER", "drivers", <IdcardOutlined style={{ fontSize: "30px" }} />),
-  getItem("VEHICLE", "vehicle", <CarOutlined style={{ fontSize: "30px" }} />),
-  getItem("TRAINING", "training", <FundProjectionScreenOutlined style={{ fontSize: "30px" }} />),
-  getItem("PROMOTION", "promotion", <GiftOutlined style={{ fontSize: "30px" }} />),
-  getItem("Log out", "logout", <LogoutOutlined style={{ fontSize: "30px", color: "#ff4d4f" }} />),
+  getItem("DASHBOARD", "/dashboard", <DashboardOutlined />),
+  getItem("EMPLOYEE", "/employees", <UserOutlined />),
+  getItem("MEMBER", "/members", <TeamOutlined />),
+  getItem("DRIVER", "/drivers", <IdcardOutlined />),
+  getItem("VEHICLE", "/vehicles", <CarOutlined />),
+  getItem("TRAINING", "/trainer", <FundProjectionScreenOutlined />),
+  getItem("PROMOTION", "/promotion", <GiftOutlined />),
+  getItem("Log out", "/login", <LogoutOutlined />),
 ];
 
 const AdminSidebar: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    setSelectedKeys([location.pathname]);
+  }, [location.pathname]);
+
+  const handleMenuClick = (e: { key: string }) => {
+    navigate(e.key);
+  };
 
   return (
     <Sider
@@ -52,25 +122,42 @@ const AdminSidebar: React.FC = () => {
       onCollapse={(value) => setCollapsed(value)}
       width={250}
       collapsedWidth={90}
-      className="sider" // ใช้ className แทนการเขียน style inline
+      style={styles.sider}
     >
-      {/* Logo Section */}
-      <div className={`logo ${collapsed ? "collapsed" : ""}`}>
+      <div
+        style={{
+          ...styles.logo,
+          ...(collapsed ? styles.logoCollapsed : {}),
+        }}
+      >
         <div
-          className={`logo-circle ${collapsed ? "collapsed" : ""}`}
+          style={{
+            ...styles.logoCircle,
+            ...(collapsed ? styles.logoCircleCollapsed : {}),
+          }}
         />
         {!collapsed && <span>username admin</span>}
       </div>
 
-      {/* Menu Section */}
       <Menu
         theme="light"
         mode="inline"
-        defaultSelectedKeys={["dashboard"]}
-        className="menu"
+        selectedKeys={selectedKeys}
+        style={styles.menu}
+        onClick={handleMenuClick}
         items={items.map((item) => ({
           ...item,
-          className: `menu-item ${item.key === "logout" ? "logout" : "default"}`,
+          icon: React.cloneElement(item.icon as React.ReactElement, {
+            style: {
+              ...styles.iconStyle,
+              ...(collapsed ? styles.iconStyleCollapsed : {}),
+            },
+          }),
+          style: {
+            ...styles.menuItem,
+            ...(collapsed ? styles.menuItemCollapsed : {}),
+            ...(item.key === "/login" ? styles.menuItemLogout : {}),
+          },
         }))}
       />
     </Sider>

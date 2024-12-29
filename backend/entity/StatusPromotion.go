@@ -1,13 +1,14 @@
 package entity
 
+import (
+   
+	"gorm.io/gorm"
 
-import "gorm.io/gorm"
-
-
+)
 type StatusPromotion struct {
 
-   gorm.Model
+   gorm.Model   
 
-   Status string  `json:"status"` // ชื่อประเภทส่วนลด เช่น "amount" หรือ "percent"
+   StatusPromotion string  `json:"status_promotion"`
 
 }

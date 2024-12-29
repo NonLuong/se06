@@ -55,7 +55,11 @@ const App: React.FC = () => {
 
 
        {/*ต้อง* promotion */}
-        <Route path="/Promotion" element={< View />} /> 
+        <Route path="/promotion" element={< Promotion />} />
+        <Route path="/promotion/create" element={< PromotionCreate />} />
+        <Route path="/promotion/edit/:id" element={< PromotionEdit />} />
+        <Route path="/promotion/view" element={< View />} />
+        
 
 
 
@@ -77,9 +81,9 @@ const App: React.FC = () => {
 
         {/*น้ำฝน Admin*/}
         <Route path="/Drivers" element={<Driver />} />
-        <Route path="/Employees" element={<Driver />} />
+        <Route path="/Employees" element={<Employee />} />
         <Route path="/Employee/create" element={<AddEmployee />} />
-        <Route path="/Employee/edit/:id" element={<EditEmployee />} />
+        <Route path="/Employee/edit" element={<EditEmployee />} />
         <Route path="/Vehicles" element={<Vehicle />} />
 
       </Routes>
